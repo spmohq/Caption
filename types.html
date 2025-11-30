@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Ecosystem Strategy</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --accent-color: #4f46e5; /* Indigo */
+            --accent-hover: #4338ca;
+            --pgp-color: #059669; /* Emerald */
+            --pgp-hover: #047857;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        /* Container for central alignment */
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Card Styles */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .prompt-content {
+            font-size: 1rem;
+            color: var(--text-primary);
+            white-space: pre-wrap; /* Preserves line breaks in the prompts */
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Button Styles */
+        button, .pgp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        /* Copy Button */
+        .btn-copy {
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-copy:hover {
+            background-color: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        .btn-copy.copied {
+            background-color: var(--text-primary);
+            color: #fff;
+        }
+
+        /* PGP Button */
+        .pgp-btn {
+            background-color: var(--pgp-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(5, 150, 105, 0.2);
+            width: 100%; /* Full width on mobile looks better for actions */
+        }
+
+        .pgp-btn:hover {
+            background-color: var(--pgp-hover);
+        }
+
+        /* Responsive Tweaks */
+        @media (min-width: 600px) {
+            .pgp-btn {
+                width: auto; /* Auto width on desktop */
+            }
+        }
+        
+        /* Icons */
+        .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Content Ecosystem</h1>
+            <p>Building the entire system from a single caption</p>
+        </header>
+
+        <div class="card-list">
+
+            <!-- Card 1: Social Media -->
+            <div class="card">
+                <div class="prompt-content" id="c1">⭐ Your entire content ecosystem can be built from captions.
+
+From a single caption, you can create:
+
+✔ Social Media Posts
+• Short storytelling posts — Instagram, Facebook, LinkedIn, Threads, X (Twitter)
+- Short stories perform best on platforms that favor emotion, relatability, and human connection.
+• Micro-insights — LinkedIn, Instagram, X (Twitter), Threads
+- Bite-sized, high-signal insights thrive in text-friendly spaces.
+• Emotional confessions — Instagram, Facebook, Threads
+- Platforms where vulnerability and personal tone perform well.
+• Mini-lessons — LinkedIn, Instagram, Facebook, X (Twitter)
+- People love quick, digestible how-to content here.
+• Carousels — Instagram, LinkedIn, Facebook
+- Carousel posts are perfect for structured teaching content.
+• Threads — X (Twitter), Threads (Instagram)
+- These platforms are built for multi-post narratives.
+• Text Reels — Instagram Reels, TikTok, YouTube Shorts
+- Fast, text-on-screen videos are favored by all short-form platforms.
+• Face-to-camera Reels — Instagram Reels, TikTok, YouTube Shorts
+- Direct-to-camera storytelling is the highest-trust format.
+• Image quotes — Instagram, Facebook, Pinterest, LinkedIn
+- Static graphics with strong captions still perform extremely well.
+• POV posts — TikTok, Instagram Reels, YouTube Shorts
+- POV: “You when you’re stuck on a chapter…” style content is native here.
+• Relatable observations — Threads, X (Twitter), Instagram, Facebook
+- These simple, universal truths perform like magic.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('c1', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Section
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2: Blog Posts -->
+            <div class="card">
+                <div class="prompt-content" id="c2">✔ Blog Posts
+
+Medium long-forms
+Substack essays
+Quora answers
+LinkedIn articles
+Website blogs
+
+All of these help build thought leadership and explain the deeper ideas behind your product.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('c2', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Section
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 3: Scripts -->
+            <div class="card">
+                <div class="prompt-content" id="c3">✔ Scripts
+
+• Reels — Instagram Reels
+- Your caption becomes the hook for 15–60 sec vertical video scripts.
+• Shorts — YouTube Shorts
+- Perfect for educational micro-insights and chapter-based struggles.
+• TikTok videos — TikTok
+- Fast-paced, conversational, emotional content wins here.
+• YouTube Community posts — YouTube
+- Short text posts + graphics + polls created from your captions.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('c3', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Section
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 4: Summary -->
+            <div class="card" style="border-left: 4px solid var(--accent-color);">
+                <div class="prompt-content" id="c4">⭐ And all of these stories, insights, reels, posts, articles — they all support the “what & why” of your Prerequisite Learning System.
+
+Your captions become the seeds.
+Your posts become the awareness.
+Your articles become the understanding.
+Your product becomes the solution.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('c4', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Summary
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <div style="text-align:center; margin-top: 40px; color: #9ca3af; font-size: 0.8rem;">
+            &copy; One Idea Forward Toolkit
+        </div>
+    </div>
+
+    <script>
+        function copyText(elementId, btn) {
+            // Get the text content
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            // Use the clipboard API
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Store original button HTML
+                const originalHtml = btn.innerHTML;
+                
+                // Change button style and text
+                btn.innerHTML = `
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Copied!
+                `;
+                btn.classList.add('copied');
+
+                // Revert back after 2 seconds
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
