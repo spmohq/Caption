@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restructure Guide</title>
+    <style>
+        /* 1. Base Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9; /* Very slight gray just to make the white box pop */
+            color: #000000; /* Pure black for maximum readability */
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        /* 2. The Content Card */
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Soft, minimal shadow */
+            border: 1px solid #eaeaea;
+        }
+
+        /* 3. Typography */
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.3;
+            color: #000000;
+        }
+
+        .list-item {
+            margin-bottom: 30px;
+            /* Flex layout to handle alignment cleanly without tables */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* The Title Line (e.g., 1. Storytelling -> ...) */
+        .item-heading {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            color: #000000;
+        }
+
+        .bold-trigger {
+            font-weight: 800; /* Extra Bold for the category */
+        }
+
+        .arrow {
+            margin: 0 5px;
+            color: #444; 
+        }
+
+        /* The Description Line */
+        .item-desc {
+            font-size: 1rem;
+            color: #222222; /* Very dark gray, almost black */
+            padding-left: 25px; /* Indent slightly to denote hierarchy */
+            border-left: 3px solid #000; /* Visual accent line */
+            margin-left: 5px;
+        }
+
+        /* 4. Mobile Responsiveness */
+        @media (max-width: 480px) {
+            body {
+                background-color: #ffffff; /* pure white on mobile */
+                padding: 0;
+                align-items: flex-start; /* Aligns to top on mobile */
+            }
+            
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 25px 20px;
+                border-radius: 0;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 30px;
+            }
+
+            .item-heading {
+                font-size: 1.1rem;
+                line-height: 1.4;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>How to Restructure for Different Formats <br><span style="font-weight:400; font-size: 0.8em;">(Simple Guide)</span></h1>
+
+        <!-- Item 1 -->
+        <div class="list-item">
+            <div class="item-heading">
+                <span class="bold-trigger">✔ 1. Storytelling</span> 
+                <span class="arrow">→</span> 
+                Long-form post, thread, or Reel script
+            </div>
+            <div class="item-desc">
+                Just expand each outline point into one or two sentences.
+            </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="list-item">
+            <div class="item-heading">
+                <span class="bold-trigger">✔ 2. Value</span> 
+                <span class="arrow">→</span> 
+                Carousel, list post, carousel voiceover, step-by-step Reel
+            </div>
+            <div class="item-desc">
+                Value posts convert extremely well into visual formats.
+            </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="list-item">
+            <div class="item-heading">
+                <span class="bold-trigger">✔ 3. Win</span> 
+                <span class="arrow">→</span> 
+                Case study post, “before/after” carousel, testimonial-style Reel
+            </div>
+            <div class="item-desc">
+                Transformation translates beautifully to social.
+            </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="list-item">
+            <div class="item-heading">
+                <span class="bold-trigger">✔ 4. Hot Take</span> 
+                <span class="arrow">→</span> 
+                Single tweet, short post, Reel with bold intro
+            </div>
+            <div class="item-desc">
+                These formats LOVE tension hooks.
+            </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="list-item">
+            <div class="item-heading">
+                <span class="bold-trigger">✔ 5. Question</span> 
+                <span class="arrow">→</span> 
+                Poll, comment prompt, story question sticker
+            </div>
+            <div class="item-desc">
+                Perfect for engagement-driven formats.
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
