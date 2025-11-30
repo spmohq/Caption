@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generic Caption Generator</title>
+  <style>
+    :root{ --bg:#f7f9fc; --card:#fff; --muted:#6b7280; --brand:#0f172a; --accent:#06b6d4; }
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto; background:var(--bg); margin:0; padding:28px; color:var(--brand);} 
+    .wrap{max-width:1100px; margin:0 auto;}
+    .grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:18px;} @media(min-width:1000px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{background:var(--card); border-radius:10px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.06);} 
+    input, select, textarea{width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #e6eef7;} textarea{min-height:110px;}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+    .btn{padding:10px 14px; border-radius:8px; border:0; cursor:pointer; font-weight:600; color:white;} .btn-primary{background:var(--accent);} .btn-green{background:#16a34a;} .btn-ghost{background:transparent; border:1px solid #e6eef7; color:var(--brand);} .btn-danger{background:#ef4444}
+    .generated-list{margin-top:16px;} .cap-item{background:#fbfdff; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(2,6,23,0.04);} 
+    .cap-actions{margin-top:8px; display:flex; gap:8px;} .count{font-size:13px;color:var(--muted);} 
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><h1>Generic Caption Generator</h1><p>Create captions for any product or offer.</p></header>
+
+    <div class="grid">
+      <div class="card">
+        <label>Product / Offer name</label>
+        <input id="productName" placeholder="e.g. Acme Task Manager" />
+
+        <label style="margin-top:12px;">Target audience</label>
+        <input id="audience" placeholder="e.g. freelancers, teachers" />
+
+        <label style="margin-top:12px;">Primary pain point</label>
+        <input id="pain" placeholder="e.g. overwhelmed by tasks" />
+
+        <label style="margin-top:12px;">Key benefit</label>
+        <input id="benefit" placeholder="e.g. saves 2 hours/day" />
+
+        <label style="margin-top:12px;">Top feature</label>
+        <input id="feature" placeholder="e.g. AI summaries" />
+
+        <label style="margin-top:12px;">CTA text</label>
+        <input id="ctaText" placeholder="e.g. Learn more →" />
+
+        <label style="margin-top:12px;">Choose template</label>
+        <select id="templateSelect"></select>
+
+        <div class="controls">
+          <button id="genOne" class="btn btn-primary">Generate & Copy</button>
+          <button id="genBatch" class="btn btn-green">Generate 10</button>
+          <button id="downloadCSV" class="btn btn-ghost">Download CSV</button>
+          <button id="clearAll" class="btn btn-danger">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between;">
+          <label>Generated captions</label>
+          <div class="count" id="count">0 captions</div>
+        </div>
+        <div id="generated" class="generated-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const templates = [
+      {id:1, title:"Problem → Solution → CTA", tpl:"[audience] struggling with [pain]? [product] helps you [benefit] with [feature]. [cta]"},
+      {id:2, title:"Before → After", tpl:"Before: [pain]. After: [benefit] — thanks to [product]. [cta]"},
+      {id:3, title:"Question Hook", tpl:"Ever wondered how [audience] handle [pain]? They use [product] — [feature]. [cta]"},
+      {id:4, title:"Feature Highlight", tpl:"Meet [product]: built for [audience], powered by [feature], designed to help you [benefit]. [cta]"},
+      {id:5, title:"Testimonial Style", tpl:"I used to deal with [pain] until I tried [product]. Now I [benefit]. [cta]"}
+    ];
+
+    const pains=["too many tasks","no time","stress","complex workflows"]; const benefits=["save time","stay organized","reduce stress"]; const features=["AI support","one-click setup","smart automation"]; const audiences=["busy professionals","creators","entrepreneurs"]; const ctas=["Learn more →","Start free trial →","Try it now →"];
+
+    const productInput=document.getElementById('productName'); const audienceInput=document.getElementById('audience'); const painInput=document.getElementById('pain'); const benefitInput=document.getElementById('benefit'); const featureInput=document.getElementById('feature'); const ctaInput=document.getElementById('ctaText');
+    const tplSel=document.getElementById('templateSelect'); const genOneBtn=document.getElementById('genOne'); const genBatchBtn=document.getElementById('genBatch'); const downloadCSVBtn=document.getElementById('downloadCSV'); const clearAllBtn=document.getElementById('clearAll'); const generatedDiv=document.getElementById('generated'); const countEl=document.getElementById('count');
+
+    let generated=[];
+
+    function init(){ templates.forEach(t=>{ const o=document.createElement('option'); o.value=t.id; o.textContent=`${t.id}. ${t.title}`; tplSel.appendChild(o); }); updateCount(); }
+
+    function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function fillTemplate(text){
+      let out=text;
+      const product=productInput.value.trim()||"[product]";
+      const audience=audienceInput.value.trim()||randomFrom(audiences);
+      const pain=painInput.value.trim()||randomFrom(pains);
+      const benefit=benefitInput.value.trim()||randomFrom(benefits);
+      const feature=featureInput.value.trim()||randomFrom(features);
+      const cta=ctaInput.value.trim()||randomFrom(ctas);
+
+      out=out.replace(/\[product\]/g,product).replace(/\[audience\]/g,audience).replace(/\[pain\]/g,pain).replace(/\[benefit\]/g,benefit).replace(/\[feature\]/g,feature).replace(/\[cta\]/g,cta);
+      return out;
+    }
+
+    function renderGenerated(){ generatedDiv.innerHTML=''; generated.forEach(g=>{ const item=document.createElement('div'); item.className='cap-item'; item.innerHTML=`<div style="white-space:pre-wrap;">${g}</div>`; const actions=document.createElement('div'); actions.className='cap-actions';
+      const copy=document.createElement('button'); copy.className='btn btn-ghost'; copy.textContent='Copy'; copy.onclick=()=>{navigator.clipboard.writeText(g); copy.textContent='Copied'; setTimeout(()=>copy.textContent='Copy',1000);};
+      actions.appendChild(copy); item.appendChild(actions); generatedDiv.appendChild(item); }); updateCount(); }
+
+    function updateCount(){ countEl.textContent=`${generated.length} caption${generated.length===1?'':'s'}`; }
+
+    function generateOne(){ const tpl=templates.find(t=>t.id==tplSel.value); const caption=fillTemplate(tpl.tpl); generated.unshift(caption); renderGenerated(); navigator.clipboard.writeText(caption); }
+    function generateBatch(){ for(let i=0;i<10;i++){ const tpl=randomFrom(templates); generated.unshift(fillTemplate(tpl.tpl)); } renderGenerated(); }
+    function downloadCSV(){ if(!generated.length){alert('No captions to export');return;} const csv='caption\n'+generated.map(g=>'"'+g.replace(/"/g,'""')+'"').join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='captions.csv'; a.click(); URL.revokeObjectURL(url); }
+    function clearAll(){ if(confirm('Clear all captions?')){generated=[]; renderGenerated();} }
+
+    genOneBtn.onclick=generateOne; genBatchBtn.onclick=generateBatch; downloadCSVBtn.onclick=downloadCSV; clearAllBtn.onclick=clearAll;
+
+    init();
+  </script>
+</body>
+</html>
