@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Caption to 10 Reels Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent-primary);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-group input, 
+    .input-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-group input::placeholder, 
+    .input-group textarea::placeholder {
+      color: rgba(209, 213, 219, 0.5);
+    }
+    .input-group input:focus, 
+    .input-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+    }
+    .input-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 400;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Caption to 10 Reels</h1>
+      <p class="subtitle">Turn one caption into 10 high-engagement video scripts.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Input Section -->
+        <div class="prompt-card">
+          <h2>Input Details</h2>
+          
+          <div class="input-group">
+            <label for="captionInput">Caption</label>
+            <textarea id="captionInput" placeholder="[PASTE YOUR CAPTION HERE]"></textarea>
+          </div>
+
+          <div class="input-group">
+            <label for="audienceInput">Audience</label>
+            <input type="text" id="audienceInput" placeholder="[optional — e.g. high school students / parents / adult learners / professionals]">
+          </div>
+        </div>
+
+        <!-- Prompt Output Section -->
+        <div class="prompt-card">
+          <h2>Prompt Preview</h2>
+          <pre id="analysisPrompt" class="prompt-text">SYSTEM:
+You are an expert short-form content writer who creates highly engaging Reels/TikTok/Shorts scripts. You take ONE caption and turn it into TEN different video styles. Keep scripts short, punchy, emotional, and visually clear. Avoid salesy tone. Use clean formatting. Each script must be fully ready to film.
+
+USER:
+CAPTION: “[PASTE YOUR CAPTION HERE]”
+AUDIENCE: [optional — e.g. high school students / parents / adult learners / professionals]
+TONE: warm, human, storytelling
+
+TASK:
+Generate TEN different Reel/Shorts scripts using the caption as the hook. Each script must include:
+
+1) A spoken script (20–45 words depending on reel type)
+2) On-screen text ideas
+3) 3–6 shot suggestions (simple + realistic)
+4) Visual style suggestions (lighting, mood, motion)
+5) Optional background music idea (genre only)
+6) Soft CTA (NOT salesy)
+7) Best platform: IG / TikTok / YT Shorts
+
+Return all TEN versions clearly labeled.
+
+Here are the TEN types you must produce:
+
+--------------------------------------
+1) **Face-to-Camera Personal Story Reel**
+- Caption = spoken hook
+- 1 short personal story moment
+- 1 insight
+- 1 soft CTA
+
+--------------------------------------
+2) **POV Reel**
+- POV: reading, studying, struggling, etc.
+- Script is internal monologue
+- Overlays are emotional micro-lines
+
+--------------------------------------
+3) **7-Second Punch Reel**
+- Very short (7–9 seconds)
+- Fast hook + visual metaphor
+- No long story
+
+--------------------------------------
+4) **Text-Only Reel (B-Roll + subtitles)**
+- Use B-roll (study desk, notebook, coffee steam)
+- Script delivered only as subtitle text
+- Calm, aesthetic, shareable
+
+--------------------------------------
+5) **List Reel (3 steps or 3 truths)**
+- “3 reasons why __”
+- Simple clean list
+- Great for TikTok & IG
+
+--------------------------------------
+6) **Before/After Reel**
+- Before: confusion  
+- After: clarity  
+- Show emotional shift or study setup change
+
+--------------------------------------
+7) **Conversation Reel (You vs You)**
+- Two characters (Teacher You vs Student You)
+- Use jump-cuts
+- Short, funny, relatable
+
+--------------------------------------
+8) **Mini-Story Reel (Cinematic)**
+- 3-scene micro-story
+- Use environment and emotion
+- Soft, cinematic feel
+
+--------------------------------------
+9) **Carousel-to-Reel Conversion**
+- Caption becomes Slide 1
+- Then 3–5 slides as animated text
+- Works for IG Reels & TikTok photo mode
+
+--------------------------------------
+10) **Hook → Build → Resolution Reel**
+- Classic high-retention structure:
+  Hook line
+  Build tension
+  Resolve with insight
+  Soft CTA
+
+--------------------------------------
+
+OUTPUT RULES:
+- Keep each script concise and platform-optimized.
+- Use the caption EXACTLY as the hook in ALL 10 versions.
+- Do NOT add emojis unless needed for clarity.
+- Use short lines + clean formatting + spacing.
+- End each version with: “Best time to post: [suggest a time]”.
+
+END.</pre>
+          <button class="copy-button" data-target="analysisPrompt">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const captionInput = document.getElementById('captionInput');
+      const audienceInput = document.getElementById('audienceInput');
+      const outputPre = document.getElementById('analysisPrompt');
+
+      // Static Prompt Parts
+      const part1 = `SYSTEM:
+You are an expert short-form content writer who creates highly engaging Reels/TikTok/Shorts scripts. You take ONE caption and turn it into TEN different video styles. Keep scripts short, punchy, emotional, and visually clear. Avoid salesy tone. Use clean formatting. Each script must be fully ready to film.
+
+USER:
+CAPTION: “`;
+
+      const part2 = `”
+AUDIENCE: `;
+
+      const part3 = `
+TONE: warm, human, storytelling
+
+TASK:
+Generate TEN different Reel/Shorts scripts using the caption as the hook. Each script must include:
+
+1) A spoken script (20–45 words depending on reel type)
+2) On-screen text ideas
+3) 3–6 shot suggestions (simple + realistic)
+4) Visual style suggestions (lighting, mood, motion)
+5) Optional background music idea (genre only)
+6) Soft CTA (NOT salesy)
+7) Best platform: IG / TikTok / YT Shorts
+
+Return all TEN versions clearly labeled.
+
+Here are the TEN types you must produce:
+
+--------------------------------------
+1) **Face-to-Camera Personal Story Reel**
+- Caption = spoken hook
+- 1 short personal story moment
+- 1 insight
+- 1 soft CTA
+
+--------------------------------------
+2) **POV Reel**
+- POV: reading, studying, struggling, etc.
+- Script is internal monologue
+- Overlays are emotional micro-lines
+
+--------------------------------------
+3) **7-Second Punch Reel**
+- Very short (7–9 seconds)
+- Fast hook + visual metaphor
+- No long story
+
+--------------------------------------
+4) **Text-Only Reel (B-Roll + subtitles)**
+- Use B-roll (study desk, notebook, coffee steam)
+- Script delivered only as subtitle text
+- Calm, aesthetic, shareable
+
+--------------------------------------
+5) **List Reel (3 steps or 3 truths)**
+- “3 reasons why __”
+- Simple clean list
+- Great for TikTok & IG
+
+--------------------------------------
+6) **Before/After Reel**
+- Before: confusion  
+- After: clarity  
+- Show emotional shift or study setup change
+
+--------------------------------------
+7) **Conversation Reel (You vs You)**
+- Two characters (Teacher You vs Student You)
+- Use jump-cuts
+- Short, funny, relatable
+
+--------------------------------------
+8) **Mini-Story Reel (Cinematic)**
+- 3-scene micro-story
+- Use environment and emotion
+- Soft, cinematic feel
+
+--------------------------------------
+9) **Carousel-to-Reel Conversion**
+- Caption becomes Slide 1
+- Then 3–5 slides as animated text
+- Works for IG Reels & TikTok photo mode
+
+--------------------------------------
+10) **Hook → Build → Resolution Reel**
+- Classic high-retention structure:
+  Hook line
+  Build tension
+  Resolve with insight
+  Soft CTA
+
+--------------------------------------
+
+OUTPUT RULES:
+- Keep each script concise and platform-optimized.
+- Use the caption EXACTLY as the hook in ALL 10 versions.
+- Do NOT add emojis unless needed for clarity.
+- Use short lines + clean formatting + spacing.
+- End each version with: “Best time to post: [suggest a time]”.
+
+END.`;
+
+      function updatePrompt() {
+        // Get values or use defaults
+        const caption = captionInput.value.trim() || "[PASTE YOUR CAPTION HERE]";
+        const audience = audienceInput.value.trim() || "[optional — e.g. high school students / parents / adult learners / professionals]";
+
+        // Construct
+        const finalPrompt = `${part1}${caption}${part2}${audience}${part3}`;
+        
+        // Update View
+        outputPre.textContent = finalPrompt;
+      }
+
+      // Attach Listeners
+      captionInput.addEventListener('input', updatePrompt);
+      audienceInput.addEventListener('input', updatePrompt);
+
+      // Copy Functionality
+      const promptsContainer = document.getElementById('promptsContainer');
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;"> </div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
