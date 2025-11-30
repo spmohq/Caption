@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Authentic Content Prompt Generator (English & Bengali)</title>
+  <link rel="icon" href="spm.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5); /* Semi-transparent card background */
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); 
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .input-group {
+        margin-bottom: 15px;
+    }
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 1rem;
+      resize: vertical;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    textarea:focus {
+        border-color: var(--accent-primary);
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      opacity: 0.9;
+      min-height: 100px;
+    }
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text {
+          font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Authentic Content Prompt Generator</h1>
+      <p class="subtitle">Enter a deeply held belief to generate a two-part content creation and translation prompt.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+
+        <!-- Input Card -->
+        <div class="prompt-card">
+          <h2>1. Insert "The Truth"</h2>
+          <div class="input-group">
+            <label for="truthInput">The personal belief or core message you are brave enough to share:</label>
+            <textarea id="truthInput" placeholder="e.g., Learning math isn't about memorization; it's about understanding the core connections."></textarea>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Type or paste above, and the prompts below will update automatically.</p>
+          </div>
+        </div>
+        
+        <!-- Output Card 1: English Blog Post Generation -->
+        <div class="prompt-card">
+          <h2>2. Prompt 1: English Blog Post</h2>
+          <pre id="prompt1Output" class="prompt-text">
+            Prompt 1 will appear here once you enter 'The Truth' above.
+          </pre>
+          <button class="copy-button" data-target="prompt1Output">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt 1</span>
+          </button>
+        </div>
+
+        <!-- Output Card 2: Bengali Translation Prompt -->
+        <div class="prompt-card">
+          <h2>3. Prompt 2: Bengali Translation</h2>
+          <pre id="prompt2Output" class="prompt-text">
+            Prompt 2 will appear here. Note: This prompt relies on ChatGPT successfully executing Prompt 1 first.
+          </pre>
+          <button class="copy-button" data-target="prompt2Output">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt 2</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const truthInput = document.getElementById('truthInput');
+      const prompt1OutputPre = document.getElementById('prompt1Output');
+      const prompt2OutputPre = document.getElementById('prompt2Output');
+      const promptsContainer = document.getElementById('promptsContainer');
+      
+      const defaultPlaceholder1 = "Prompt 1 will appear here once you enter 'The Truth' above.";
+      const defaultPlaceholder2 = "Prompt 2 will appear here. Note: This prompt relies on ChatGPT successfully executing Prompt 1 first.";
+
+      // --- Prompt Templates ---
+      const prompt1Template = `Prompt1:
+
+The truth I am brave enough to share today is: 
+[[THE_TRUTH]]
+
+Your Task:
+
+A. Find its "why."
+
+B. Based on your reply to "A", please write a blog post with the followings in chronological order:
+
+1, Start with a hook.
+2, Tell stories, not lectures.
+3, Give readers something to take away.
+4, Write like you talk.
+5, Make it easy to read.
+6, End with heart.`;
+
+      const prompt2Template = `Prompt2:
+
+Please translate the previous answer, as much word by word as possible, in the most spontaneous and natural sounding modern, everyday conversational Bengali as spoken in Kolkata, West Bengal, India that can be understood by an 21 year old but contains the international standards of language.
+
+• Always use the formal “আপনি”, not the informal “তুমি.” The address is formal, but the tone should remain warm, conversational, and approachable.
+• The voice should feel like a close friend and a trusted authority, speaking one-on-one with the reader in a natural, face-to-face style.`;
+      // --------------------------
+
+      function generatePrompts(truth) {
+          if (!truth || truth.trim() === '') {
+              prompt1OutputPre.textContent = defaultPlaceholder1;
+              prompt2OutputPre.textContent = defaultPlaceholder2;
+              return;
+          }
+
+          const cleanTruth = truth.trim();
+
+          // Generate Prompt 1
+          const generatedPrompt1 = prompt1Template.replace('[[THE_TRUTH]]', cleanTruth);
+          prompt1OutputPre.textContent = generatedPrompt1;
+          
+          // Prompt 2 is static, but we update the display
+          prompt2OutputPre.textContent = prompt2Template;
+      }
+
+      // Update previews dynamically on input
+      truthInput.addEventListener('input', () => generatePrompts(truthInput.value));
+
+      // Initial state
+      generatePrompts(truthInput.value);
+
+      // Event delegation for the copy button (mimics the original model)
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        if (textToCopy === defaultPlaceholder1 || textToCopy === defaultPlaceholder2 || textToCopy.startsWith("Error:")) {
+             alert("Please enter 'The Truth' before copying a prompt.");
+             return;
+        }
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;"> </div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
