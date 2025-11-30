@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generic Caption Generator — 20 Templates</title>
+  <style>
+    :root{
+      --bg:#f7f9fc; --card:#ffffff; --muted:#6b7280; --brand:#0f172a; --accent:#06b6d4;
+    }
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:28px; color:var(--brand);}
+    .wrap{max-width:1100px; margin:0 auto;}
+    header h1{margin:0;font-size:20px;} header p{color:var(--muted); margin-top:6px;}
+    .grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:18px;}
+    @media(min-width:1000px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{background:var(--card); border-radius:10px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.06); border:1px solid rgba(15,23,42,0.04);}
+    label{display:block; font-weight:600; font-size:13px; color:var(--brand);}
+    input,select,textarea{width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #e6eef7; font-size:14px; box-sizing:border-box;}
+    textarea{min-height:110px; resize:vertical;}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+    .btn{display:inline-block; padding:10px 14px; border-radius:8px; border:0; cursor:pointer; font-weight:600; color:white;}
+    .btn-primary{background:var(--accent);} .btn-green{background:#16a34a;} .btn-ghost{background:transparent; border:1px solid #e6eef7; color:var(--brand);} .btn-danger{background:#ef4444;}
+    .small{font-size:13px; color:var(--muted);} .generated-list{margin-top:16px;} .cap-item{background:#fbfdff; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(2,6,23,0.04);}
+    .cap-actions{margin-top:8px; display:flex; gap:8px;} .count{font-size:13px;color:var(--muted);}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Generic Caption Generator</h1>
+      <p class="small">20 templates included. Fill product fields (optional), pick a template, then generate single or bulk captions. Export CSV for schedulers.</p>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Controls -->
+      <div class="card">
+        <label>Product / Offer name</label>
+        <input id="productName" placeholder="e.g. Acme Task Manager" />
+
+        <div style="margin-top:12px;">
+          <label>Target audience (optional)</label>
+          <input id="audience" placeholder="e.g. busy freelancers, teachers, parents" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Primary pain point (optional)</label>
+          <input id="pain" placeholder="e.g. overwhelmed by tasks, confusing setup" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Key benefit (optional)</label>
+          <input id="benefit" placeholder="e.g. saves 2 hours/day, simplifies onboarding" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Top feature (optional)</label>
+          <input id="feature" placeholder="e.g. one-click import, AI summaries" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>CTA text (optional)</label>
+          <input id="ctaText" placeholder="e.g. Start free trial →, Learn more →" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Choose template</label>
+          <select id="templateSelect">
+            <option value="" selected disabled>Select a template…</option>
+          </select>
+        </div>
+
+        <div class="controls" style="margin-top:12px;">
+          <button id="genOne" class="btn btn-primary">Generate & Copy</button>
+          <button id="genBatch" class="btn btn-green">Generate 10</button>
+          <button id="downloadCSV" class="btn btn-ghost">Download CSV</button>
+          <button id="clearAll" class="btn btn-danger">Clear</button>
+        </div>
+
+        <div style="margin-top:12px" class="small">
+          Tip: placeholders you can use in templates: <code>[product]</code>, <code>[audience]</code>, <code>[pain]</code>, <code>[benefit]</code>, <code>[feature]</code>, <code>[cta]</code>.
+        </div>
+      </div>
+
+      <!-- Right: Preview / Generated -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <label>Generated captions</label>
+            <div class="small">Recent captions appear below. Use Copy or Download for each.</div>
+          </div>
+          <div class="row">
+            <div class="count" id="count">0 captions</div>
+          </div>
+        </div>
+
+        <div id="generated" class="generated-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 20 templates
+    const templates = [
+      {id:1, title:"Problem → Solution → CTA", tpl:"[audience] struggling with [pain]? [product] helps you [benefit] with [feature]. [cta]"},
+      {id:2, title:"Before → After", tpl:"Before: [pain]. After: [benefit] — thanks to [product]. [cta]"},
+      {id:3, title:"Question Hook", tpl:"Ever wondered how [audience] handle [pain]? They use [product] — [feature]. [cta]"},
+      {id:4, title:"Feature Highlight", tpl:"Meet [product]: built for [audience], powered by [feature], designed to help you [benefit]. [cta]"},
+      {id:5, title:"Testimonial Style", tpl:"I used to deal with [pain] until I tried [product]. Now I [benefit]. [cta]"},
+      {id:6, title:"Straight Benefit", tpl:"Want to [benefit]? [product] helps [audience] get it done fast with [feature]. [cta]"},
+      {id:7, title:"Bold Claim", tpl:"[product] is changing how [audience] overcome [pain]. Here’s how: [feature]. [cta]"},
+      {id:8, title:"Relatable Moment", tpl:"If you've ever felt stuck dealing with [pain], you're not alone. [product] helps you finally [benefit]. [cta]"},
+      {id:9, title:"Mini Story", tpl:"Yesterday someone told me they were tired of [pain]. I showed them [product] — the [feature] made them instantly [benefit]. [cta]"},
+      {id:10, title:"Shock & Fix", tpl:"Most [audience] don’t realize how much [pain] is costing them. [product] fixes that with [feature]. [cta]"},
+      {id:11, title:"List Style", tpl:"3 reasons [audience] love [product]: 1) [feature] 2) Helps you [benefit] 3) No more [pain]. [cta]"},
+      {id:12, title:"Pain Interrupt", tpl:"Stop letting [pain] slow you down. [product] makes it simple to [benefit]. [cta]"},
+      {id:13, title:"Soft Sell", tpl:"If you're done dealing with [pain], you might really love [product]. It helps you [benefit] using [feature]."},
+      {id:14, title:"Curiosity Hook", tpl:"The real reason [audience] struggle with [pain]? They’re missing [feature]. That’s why [product] works. [cta]"},
+      {id:15, title:"Friendly Advice", tpl:"Quick tip: If you're trying to [benefit], start with [product]. The [feature] alone removes so much [pain]. [cta]"},
+      {id:16, title:"Short Punchline", tpl:"[product]: because dealing with [pain] is so last year. [cta]"},
+      {id:17, title:"Confidence Boost", tpl:"You can absolutely [benefit]. [product] just speeds it up with [feature]. [cta]"},
+      {id:18, title:"Content Screenshot", tpl:"This was the moment [benefit] finally clicked — and yes, it was thanks to [product]. [cta]"},
+      {id:19, title:"Value Stack", tpl:"[product] gives you [feature], helps you avoid [pain], and unlocks [benefit]. All in one tool. [cta]"},
+      {id:20, title:"One-Liner CTA", tpl:"[product] — the easiest way for [audience] to [benefit]. [cta]"}
+    ];
+
+    // fallback banks
+    const pains = ["too many tasks","confusing setup","slow performance","no clear process","wasting time"];
+    const benefits = ["save time","focus on what matters","work with less stress","get results faster","more clarity and control"];
+    const features = ["one-click setup","AI-powered suggestions","simple import","automated reports","intuitive dashboard"];
+    const audiences = ["busy professionals","freelancers","small teams","teachers","founders"];
+    const ctas = ["Learn more →","Start free trial →","Get a demo →","Sign up now →","Try it free →"];
+
+    // DOM refs
+    const tplSel = document.getElementById('templateSelect');
+    const productInput = document.getElementById('productName');
+    const audienceInput = document.getElementById('audience');
+    const painInput = document.getElementById('pain');
+    const benefitInput = document.getElementById('benefit');
+    const featureInput = document.getElementById('feature');
+    const ctaInput = document.getElementById('ctaText');
+    const genOneBtn = document.getElementById('genOne');
+    const genBatchBtn = document.getElementById('genBatch');
+    const downloadCSVBtn = document.getElementById('downloadCSV');
+    const clearAllBtn = document.getElementById('clearAll');
+    const generatedDiv = document.getElementById('generated');
+    const countEl = document.getElementById('count');
+
+    let generated = [];
+
+    function init(){
+      // populate select with templates
+      templates.forEach(t=>{
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = `${t.id}. ${t.title}`;
+        tplSel.appendChild(opt);
+      });
+      updateCount();
+    }
+
+    function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function fillTemplate(text){
+      const product = productInput.value.trim() || "your product";
+      const audience = audienceInput.value.trim() || randomFrom(audiences);
+      const pain = painInput.value.trim() || randomFrom(pains);
+      const benefit = benefitInput.value.trim() || randomFrom(benefits);
+      const feature = featureInput.value.trim() || randomFrom(features);
+      const cta = ctaInput.value.trim() || randomFrom(ctas);
+
+      let out = text;
+      out = out.replace(/\[product\]/g, product);
+      out = out.replace(/\[audience\]/g, audience);
+      out = out.replace(/\[pain\]/g, pain);
+      out = out.replace(/\[benefit\]/g, benefit);
+      out = out.replace(/\[feature\]/g, feature);
+      out = out.replace(/\[cta\]/g, cta);
+
+      return out;
+    }
+
+    function renderGenerated(){
+      generatedDiv.innerHTML = "";
+      generated.forEach((g, idx) => {
+        const item = document.createElement('div');
+        item.className = 'cap-item';
+        const pre = document.createElement('div');
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.textContent = g;
+        item.appendChild(pre);
+
+        const actions = document.createElement('div');
+        actions.className = 'cap-actions';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'btn btn-ghost';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = ()=>{ navigator.clipboard.writeText(g).then(()=>{ copyBtn.textContent='Copied'; setTimeout(()=>copyBtn.textContent='Copy',1100); },()=>{ /* fail silently */ }); };
+
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'btn';
+        dlBtn.style.background = 'var(--accent)'; dlBtn.style.color='white';
+        dlBtn.textContent = 'Download';
+        dlBtn.onclick = ()=>{ const a = document.createElement('a'); a.href = 'data:text/plain;charset=utf-8,'+encodeURIComponent(g); a.download = 'caption.txt'; a.click(); };
+
+        actions.appendChild(copyBtn);
+        actions.appendChild(dlBtn);
+        item.appendChild(actions);
+        generatedDiv.appendChild(item);
+      });
+      updateCount();
+    }
+
+    function updateCount(){
+      countEl.textContent = `${generated.length} caption${generated.length===1?'':'s'}`;
+    }
+
+    function generateOne(){
+      const sel = tplSel.value;
+      let tpl;
+      if(!sel){
+        // no template chosen — use first template as default
+        tpl = templates[0];
+      } else {
+        tpl = templates.find(t=>String(t.id) === String(sel)) || templates[0];
+      }
+      const caption = fillTemplate(tpl.tpl);
+      generated.unshift(caption);
+      renderGenerated();
+      // attempt copy to clipboard
+      try{ navigator.clipboard.writeText(caption); }catch(e){}
+    }
+
+    function generateBatch(n=10){
+      const res = [];
+      for(let i=0;i<n;i++){
+        const rand = templates[Math.floor(Math.random()*templates.length)];
+        res.push(fillTemplate(rand.tpl));
+      }
+      generated = [...res, ...generated];
+      renderGenerated();
+    }
+
+    function downloadCSV(){
+      if(generated.length===0){ alert('No captions to export'); return; }
+      const csv = "caption\n" + generated.map(g => '"' + g.replace(/"/g,'""') + '"').join("\n");
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'captions.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAll(){
+      if(!confirm('Clear all generated captions?')) return;
+      generated = [];
+      renderGenerated();
+    }
+
+    // event bindings
+    genOneBtn.onclick = generateOne;
+    genBatchBtn.onclick = ()=>generateBatch(10);
+    downloadCSVBtn.onclick = downloadCSV;
+    clearAllBtn.onclick = clearAll;
+
+    // init
+    init();
+  </script>
+</body>
+</html>
