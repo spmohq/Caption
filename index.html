@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prerequisite Caption Generator — Standalone</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --card:#ffffff; --muted:#64748b; --brand:#3730a3; --accent:#0ea5a4;
+      --success:#16a34a; --danger:#ef4444; --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
+    }
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:28px; color:#0f172a;}
+    .wrap{max-width:1000px; margin:0 auto;}
+    header h1{margin:0;font-size:20px;}
+    header p{color:var(--muted); margin-top:6px;}
+    .grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:18px;}
+    @media(min-width:900px){ .grid{grid-template-columns: 1fr 1fr;} }
+    .card{background:var(--card); border-radius:10px; padding:14px; box-shadow:0 6px 18px rgba(2,6,23,0.06); border:1px solid rgba(15,23,42,0.04);}
+    label{display:block; font-weight:600; font-size:13px; color:#0f172a;}
+    select,input{width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #e6eef7; font-size:14px; box-sizing:border-box;}
+    textarea{width:100%; padding:10px; border-radius:8px; border:1px solid #e6eef7; min-height:90px; font-size:14px; resize:vertical;}
+    .btn{display:inline-block; padding:10px 14px; border-radius:8px; border:0; cursor:pointer; font-weight:600; color:white;}
+    .btn-primary{background:var(--brand);} .btn-green{background:var(--success);} .btn-ghost{background:transparent; border:1px solid #e6eef7; color:#0f172a;}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+    .small{font-size:13px; color:var(--muted);}
+    .generated-list{margin-top:16px;}
+    .cap-item{background:#fbfdff; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(2,6,23,0.04);}
+    .cap-actions{margin-top:8px; display:flex; gap:8px;}
+    .chip{display:inline-block;padding:6px 8px;border-radius:999px;background:#eef2ff;color:var(--brand); font-weight:600; font-size:12px;}
+    .footer{margin-top:20px; color:var(--muted); font-size:13px;}
+    .row{display:flex; gap:8px; align-items:center;}
+    .flexcol{display:flex; flex-direction:column; gap:8px;}
+    .right{justify-content:flex-end;}
+    .count{font-size:13px;color:var(--muted);}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Prerequisite Caption Generator</h1>
+      <p class="small">Create unlimited social captions for the Prerequisite Learning System. Pick a template → customize → generate → copy or export CSV.</p>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Controls -->
+      <div class="card">
+        <label>Choose template</label>
+        <select id="templateSelect"></select>
+
+        <div style="margin-top:12px;">
+          <label>Topic (optional)</label>
+          <input id="topic" placeholder="e.g. Current Electricity" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Custom pain point (optional)</label>
+          <input id="customPain" placeholder="e.g. nothing is clicking" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Custom root cause (optional)</label>
+          <input id="customRoot" placeholder="e.g. missing prerequisites" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Custom prerequisite (optional)</label>
+          <input id="customPrereq" placeholder="e.g. basic definitions" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>Custom emotion (optional)</label>
+          <input id="customEmotion" placeholder="e.g. overwhelmed" />
+        </div>
+
+        <div style="margin-top:12px;">
+          <label>CTA style</label>
+          <select id="ctaSelect"></select>
+        </div>
+
+        <div class="controls" style="margin-top:12px;">
+          <button id="genOne" class="btn btn-primary">Generate & Copy</button>
+          <button id="genBatch" class="btn btn-green">Generate 10</button>
+          <button id="downloadCSV" class="btn btn-ghost">Download CSV</button>
+          <button id="clearAll" class="btn" style="background:var(--danger)">Clear</button>
+        </div>
+
+        <div style="margin-top:12px" class="small">
+          Tip: Press <strong>Generate & Copy</strong> to generate one caption and copy it automatically to your clipboard.
+        </div>
+      </div>
+
+      <!-- Right: Preview / Generated -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <label>Generated captions</label>
+            <div class="small">Recent captions appear below. Use Copy or Download for each.</div>
+          </div>
+          <div class="row">
+            <div class="count" id="count">0 captions</div>
+          </div>
+        </div>
+
+        <div id="generated" class="generated-list"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div style="margin-top:14px;">How to use: select a template, optionally fill topic/custom fields, click Generate. Use Generate 10 for bulk output. Export CSV for scheduling tools.</div>
+    </div>
+  </div>
+
+  <script>
+    // Templates (30)
+    const templates = [
+      {id:1, title:"Pain → Realization → Fix", tpl:"I used to struggle with [pain point]. Then I realized the real issue was [root cause]. Fixing that changed everything."},
+      {id:2, title:"It’s Not You", tpl:"If you’re stuck with [topic], it’s not you — it’s the missing [prerequisite]."},
+      {id:3, title:"Before / After", tpl:"Before: [struggle]\\nAfter: [new clarity]\\nThe difference? [method/tool]."},
+      {id:4, title:"Myth Breaker", tpl:"Everyone thinks [myth], But the truth is [contrarian insight]."},
+      {id:5, title:"The Hidden Step", tpl:"You’re confused because you skipped this step: [foundation concept]."},
+      {id:6, title:"Soft Reassurance", tpl:"You’re not behind. You just need [specific foundation]."},
+      {id:7, title:"Pull-Quote", tpl:"The moment you understand [basic idea], everything else unlocks."},
+      {id:8, title:"Story Opener", tpl:"I once believed [wrong belief]. Then [event] changed everything."},
+      {id:9, title:"Gentle Call-Out", tpl:"If you’re rereading [chapter/topic] again and again— that’s your sign something deeper is missing."},
+      {id:10, title:"Curiosity Gap", tpl:"Most people never realize this about [topic]: [hidden truth]."},
+      {id:11, title:"Hard Truth", tpl:"You’re not struggling because [topic] is hard. You’re struggling because [missing step]."},
+      {id:12, title:"Empathy Caption", tpl:"If you feel [emotion], here’s what I want you to know: [gentle truth]."},
+      {id:13, title:"One Thing", tpl:"One thing changed how I learn forever: [insight]."},
+      {id:14, title:"Question Hook", tpl:"Ever wondered why [pain point] happens? Here’s the real reason."},
+      {id:15, title:"Ladder", tpl:"To learn [topic], you actually need to learn: 1. [step 1] 2. [step 2] 3. [step 3] Then it finally makes sense."},
+      {id:16, title:"Secret Ingredient", tpl:"The secret to understanding [topic] isn’t talent. It’s [foundation/missing concept]."},
+      {id:17, title:"Relief", tpl:"It’s not that you can’t learn [topic]. You just never got [starting point]."},
+      {id:18, title:"Mini Lesson", tpl:"Lesson I wish I learned earlier: [truth about learning]."},
+      {id:19, title:"Transformation", tpl:"I used to feel [bad emotion] when studying [topic]. Now I feel [empowered emotion] — because I fixed [issue]."},
+      {id:20, title:"Foundation Reveal", tpl:"Understanding [chapter] depends on knowing [A, B, C] first."},
+      {id:21, title:"Short Punch", tpl:"Stop rereading. Start [foundation fix]."},
+      {id:22, title:"Micro Advice", tpl:"Next time you’re stuck, ask: ‘Do I know [prerequisite concept]?’"},
+      {id:23, title:"Screenshot Caption", tpl:"This was the moment [topic] finally clicked."},
+      {id:24, title:"Hero Moment", tpl:"I thought the problem was me. Turns out it was [missing prerequisite]."},
+      {id:25, title:"Relatable Confession", tpl:"I used to avoid [topic] because it made me feel [emotion]."},
+      {id:26, title:"Do This Instead", tpl:"Instead of rereading [chapter], check [missing foundation] first."},
+      {id:27, title:"One-Line Wisdom", tpl:"Clarity starts at [fundamental step]."},
+      {id:28, title:"Encouragement", tpl:"You’re not slow — the chapter is too early."},
+      {id:29, title:"Soft CTA", tpl:"If this resonates, check your missing prerequisites. They might change everything."},
+      {id:30, title:"Quick CTA", tpl:"Most confusion comes from one skipped step: [prerequisite]. Find your missing step → [link]"}
+    ];
+
+    // Banks
+    const painPoints = ["nothing is clicking","the chapter feels impossible","I forget everything I study","I read but don’t understand","I feel stupid while studying","everyone else gets it but me","I’m drowning in confusion"];
+    const rootCauses = ["missing prerequisites","skipped basics","wrong starting point","unclear foundation","the step before the chapter","invisible gaps","rushed earlier lessons"];
+    const prerequisites = ["basic definitions","step-1 concepts","prior chapters","fundamental rules","core ideas","conceptual building blocks"];
+    const emotions = ["overwhelmed","frustrated","ashamed","embarrassed","stuck","anxious","helpless"];
+    const empowered = ["confident","relieved","clear","capable","motivated","excited","steady"];
+    const insights = ["learning is architecture","confusion ≠ lack of intelligence","order matters more than speed","your foundation shapes your clarity","you can’t build level 10 on level 2"];
+    const ctas = ["Start with the foundations.","Clarity begins with the first step.","You deserve effortless learning.","Find your missing prerequisite here → [link]","Try the free tool that reveals the step beneath the chapter.","Get clarity now → [link]"];
+
+    // DOM refs
+    const tplSel = document.getElementById('templateSelect');
+    const topicInput = document.getElementById('topic');
+    const customPain = document.getElementById('customPain');
+    const customRoot = document.getElementById('customRoot');
+    const customPrereq = document.getElementById('customPrereq');
+    const customEmotion = document.getElementById('customEmotion');
+    const ctaSel = document.getElementById('ctaSelect');
+    const genOneBtn = document.getElementById('genOne');
+    const genBatchBtn = document.getElementById('genBatch');
+    const downloadCSVBtn = document.getElementById('downloadCSV');
+    const clearAllBtn = document.getElementById('clearAll');
+    const generatedDiv = document.getElementById('generated');
+    const countEl = document.getElementById('count');
+
+    // generated storage
+    let generated = [];
+
+    // populate selects
+    function init(){
+      templates.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = `${t.id}. ${t.title}`;
+        tplSel.appendChild(opt);
+      });
+      ctas.forEach((c,i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = c;
+        ctaSel.appendChild(opt);
+      });
+      updateCount();
+    }
+
+    function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function fillTemplate(text){
+      let out = text;
+      const topic = topicInput.value.trim() || "this topic";
+      out = out.replace(/\[pain point\]/g, customPain.value.trim() || randomFrom(painPoints));
+      out = out.replace(/\[root cause\]/g, customRoot.value.trim() || randomFrom(rootCauses));
+      out = out.replace(/\[prerequisite\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      out = out.replace(/\[topic\]/g, topic);
+      out = out.replace(/\[struggle\]/g, customPain.value.trim() || randomFrom(painPoints));
+      out = out.replace(/\[new clarity\]/g, randomFrom(empowered));
+      out = out.replace(/\[method\/tool\]/g, "the Prerequisite Learning System");
+      out = out.replace(/\[myth\]/g, "");
+      out = out.replace(/\[contrarian insight\]/g, randomFrom(insights));
+      out = out.replace(/\[foundation concept\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      out = out.replace(/\[specific foundation\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      out = out.replace(/\[basic idea\]/g, randomFrom(insights));
+      out = out.replace(/\[wrong belief\]/g, "I wasn’t good at learning");
+      out = out.replace(/\[event\]/g, "someone asked me a simple question");
+      out = out.replace(/\[chapter\/topic\]/g, topic);
+      out = out.replace(/\[hidden truth\]/g, randomFrom(insights));
+      out = out.replace(/\[missing step\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      out = out.replace(/\[emotion\]/g, customEmotion.value.trim() || randomFrom(emotions));
+      out = out.replace(/\[gentle truth\]/g, "you were not broken — you needed the basics");
+      out = out.replace(/\[insight\]/g, randomFrom(insights));
+      out = out.replace(/\[step 1\]/g, "basic definitions");
+      out = out.replace(/\[step 2\]/g, "simple examples");
+      out = out.replace(/\[step 3\]/g, "practice problems");
+      out = out.replace(/\[truth about learning\]/g, randomFrom(insights));
+      out = out.replace(/\[bad emotion\]/g, randomFrom(emotions));
+      out = out.replace(/\[empowered emotion\]/g, randomFrom(empowered));
+      out = out.replace(/\[issue\]/g, customRoot.value.trim() || randomFrom(rootCauses));
+      out = out.replace(/\[A, B, C\]/g, "A: basics, B: process, C: application");
+      out = out.replace(/\[foundation fix\]/g, "repair the basics");
+      out = out.replace(/\[prerequisite concept\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      out = out.replace(/\[link\]/g, "[your link here]");
+      out = out.replace(/\[fundamental step\]/g, customPrereq.value.trim() || randomFrom(prerequisites));
+      // add chosen CTA if template is soft CTA
+      const cta = ctas[parseInt(ctaSel.value,10)] || "";
+      if(out.includes("[link]")) out = out.replace(/\[link\]/g, "[your link here]");
+      // optionally append CTA for certain templates
+      return out + (cta ? ("\n\n" + cta) : "");
+    }
+
+    function renderGenerated(){
+      generatedDiv.innerHTML = "";
+      generated.forEach((g, idx) => {
+        const item = document.createElement('div');
+        item.className = 'cap-item';
+        const pre = document.createElement('div');
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.textContent = g;
+        item.appendChild(pre);
+
+        const actions = document.createElement('div');
+        actions.className = 'cap-actions';
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'btn btn-ghost';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = ()=>{ navigator.clipboard.writeText(g); copyBtn.textContent='Copied'; setTimeout(()=>copyBtn.textContent='Copy',1200); };
+
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'btn';
+        dlBtn.style.background='#0ea5a4'; dlBtn.style.color='white';
+        dlBtn.textContent = 'Download';
+        dlBtn.onclick = ()=>{
+          const a = document.createElement('a');
+          a.href = 'data:text/plain;charset=utf-8,'+encodeURIComponent(g);
+          a.download = 'caption.txt';
+          a.click();
+        };
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'btn btn-primary';
+        useBtn.textContent = 'Use as Template';
+        useBtn.onclick = ()=>{
+          topicInput.value = topicInput.value || '';
+          // small heuristic: if caption contains a topic mention, suggest it
+          // not parsing further — keep simple
+          navigator.clipboard.writeText(g);
+          alert('Caption copied to clipboard. Paste it where you post.');
+        };
+
+        actions.appendChild(copyBtn); actions.appendChild(dlBtn); actions.appendChild(useBtn);
+        item.appendChild(actions);
+
+        generatedDiv.appendChild(item);
+      });
+      updateCount();
+    }
+
+    function updateCount(){
+      countEl.textContent = `${generated.length} caption${generated.length===1?'':'s'}`;
+    }
+
+    function generateOne(){
+      const tplId = parseInt(tplSel.value,10);
+      const tpl = templates.find(t=>t.id===tplId);
+      if(!tpl) return;
+      const caption = fillTemplate(tpl.tpl);
+      generated.unshift(caption);
+      renderGenerated();
+      // copy to clipboard
+      navigator.clipboard.writeText(caption).then(()=>{/*copied*/},()=>{/*fail*/});
+    }
+
+    function generateBatch(n=10){
+      const res = [];
+      for(let i=0;i<n;i++){
+        const rand = templates[Math.floor(Math.random()*templates.length)];
+        res.push(fillTemplate(rand.tpl));
+      }
+      generated = [...res, ...generated];
+      renderGenerated();
+    }
+
+    function downloadCSV(){
+      if(generated.length===0){ alert('No captions to export'); return; }
+      const rows = generated.map(g => `"${g.replace(/"/g,'""')}"`).join("\n");
+      const csv = "caption\n" + rows;
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'captions.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAll(){
+      if(!confirm('Clear all generated captions?')) return;
+      generated = [];
+      renderGenerated();
+    }
+
+    // event bindings
+    genOneBtn.onclick = generateOne;
+    genBatchBtn.onclick = ()=>generateBatch(10);
+    downloadCSVBtn.onclick = downloadCSV;
+    clearAllBtn.onclick = clearAll;
+
+    // init
+    init();
+  </script>
+</body>
+</html>
