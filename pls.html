@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PLS Prompt Generator</title>
+  <!-- Using a generic icon for the prompt generator -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+      --input-border-focus: #22d3ee;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    textarea.custom-input {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 15px;
+      color: var(--text-heading);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    textarea.custom-input:focus {
+      border-color: var(--input-border-focus);
+    }
+    textarea.custom-input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Prompt Text Styles */
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 400;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    /* Dynamic text highlighting */
+    .dynamic-insert {
+      color: var(--accent-primary);
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 4px;
+    }
+
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-gradient-end); 
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563; 
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280; 
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>PLS Prompt Generator</h1>
+      <p class="subtitle">Enter your requirements to generate a tailored Prerequisite Learning System prompt.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Input Section -->
+        <div class="prompt-card">
+          <h2>Input</h2>
+          <div class="input-group">
+            <label for="userExpectation">Input:</label>
+            <textarea id="userExpectation" class="custom-input" placeholder="[Insert Your Expectation Here]"></textarea>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="prompt-card">
+          <h2>Prompt for PLS</h2>
+          <!-- The preformatted text block -->
+          <pre id="analysisPrompt" class="prompt-text">Context:
+======
+
+An Important Note:
+
+I sell a reusable prompt template to buyers, but I do not provide the raw template to them directly. Instead, buyers receive it in the form of a web app. The web app uses that template internally to generate a customized version for each user based on inputs such as age, preferred response language, and custom text.
+This Important Note is only for internal use while I work with the AI. It is not shown to buyers or users of the web app.
+Please understand the following:
+1, The text the AI receives comes from a customized version of my reusable prompt template.
+2, The customization is done by the HTML generator I provide to buyers, not by the user manually.
+3, The AI is expected to act on the final customized prompt, not on the generator itself.
+4, The user’s final result comes from the AI’s response, not from the HTML tool; users proceed based on the answer given by the AI.
+
+Product Details:
+
+1: The System Name:
+Prerequisite Learning System
+2: An One-Sentence Definition
+Here is a simple, strong definition:
+“A Prerequisite Learning System helps you understand a topic by first teaching you the foundational knowledge you’re missing.”
+3: Slightly Longer Explanation (still simple)
+“This system identifies the knowledge gaps that block your understanding of a topic, teaches you the necessary prerequisites, and then guides you to fully learn the main topic.”
+4: Extended Explanation (for website or documentation)
+The Prerequisite Learning System is designed to help you learn any topic more effectively.
+ Instead of jumping straight into the main subject, the system first discovers which essential ideas you don’t know yet. It then teaches you those missing prerequisites in simple steps. Once your knowledge gaps are filled, the system guides you through the main topic so you can understand it clearly and confidently.
+5: Tagline (very short slogan)
+“Learn better by learning what you missed.”
+6: Short Marketing Description
+The Prerequisite Learning System makes learning easier by identifying your knowledge gaps and teaching the missing foundations. Once the essentials are clear, you can understand the main topic quickly and confidently.
+7: Simple Logo Idea (text-only concept)
+A staircase icon with one missing step being filled in — symbolizing learning the prerequisites before moving up.
+8: Simple Diagram of How the System Works
+Explained in words so you can visualize it.
+Diagram (in simple steps):
+Choose the topic you want to learn
+System checks what you already know
+System finds the missing prerequisites
+System teaches the missing basics
+You return to the main topic
+You understand the topic fully
+
+
+Seed Article:
+
+When you can’t understand a topic,
+Do you blame yourself?
+You shouldn’t.
+Not even for a moment.
+Think of those times when you sit down to study—
+you read,
+and read,
+and read…
+…but your mind feels empty,
+like a blank sheet where nothing sticks.
+And quietly, a thought whispers—
+“Maybe the problem is me.”
+Today, I want to tell you something
+that might lighten your heart.
+The problem isn’t you.
+It never was.
+A few days ago, a student told me,
+“Brother, I try so hard, but ‘Current Electricity’ scares me.
+My mind just shuts down.”
+I asked him gently,
+“Do you know Ohm’s Law?”
+He looked embarrassed.
+“Not fully…”
+And that was it.
+The mystery was solved.
+His struggle wasn’t with Physics.
+His struggle was with the missing bricks
+at the foundation.
+So I asked him to try something simple—
+use AI and ask:
+“Please analyse why I’m struggling with Current Electricity. List the prerequisites I must learn first.”
+In just five seconds, AI showed him
+the four concepts he’d never properly learned:
+Charge, Potential Difference, Resistance, Basic Circuit Diagrams.
+The look on his face changed—
+as if someone switched on a torch
+in a room he didn’t realize was dark.
+“Brother… I was fighting the wrong battle!”
+And in that instant,
+half his fear disappeared.
+Because fear survives only in darkness.
+Light removes it.
+So when a topic makes no sense to you—
+don’t even for a second
+call yourself weak.
+It’s not weakness.
+It’s just a Prerequisite Gap.
+Ask AI:
+“I’m struggling with this topic.
+Please find my missing prerequisites and explain them simply.”
+Then ask:
+“Teach me these prerequisites like I’m a complete beginner.”
+And watch what happens—
+where you were stuck for three long days,
+you’ll move forward in thirty minutes.
+Because the truth is powerful:
+You can learn.
+You are capable.
+You are intelligent.
+Sometimes you just don’t know
+which invisible wall is blocking you.
+AI is that calm friend who sits beside you and says—
+“This isn’t your fault.
+You simply needed a few building blocks.
+Now that you know them,
+you’ll fly.”
+And suddenly, your chest feels lighter.
+Your curiosity returns.
+Learning becomes joyful again.
+Remember this:
+You are smart.
+You are strong.
+You can learn anything—swiftly, beautifully.
+All you need is clarity
+on the foundations you missed.
+That’s where AI shines.
+It wipes away the fog,
+like headlights cutting through mist
+on a dark night.
+I’m telling you all this for one reason—
+so you never again believe
+that you are slow,
+or weak,
+or “not made for learning.”
+You are made for learning.
+You are built for growth.
+And you are far more capable
+than you think.
+Some doors on your path were closed.
+AI will open them—one after another.
+Inside you lives
+an extraordinary power to understand.
+Inside you burns
+a quiet, steady light.
+I’m here with you.
+AI is here too.
+And your path forward
+has already begun to glow.
+
+Role:
+====
+
+You are a senior social media growth strategist with 15+ years of experience helping clients maximize visibility, authority, and engagement on major platforms like Medium, Substack, Quora, Reddit, LinkedIn, Instagram, Threads (of Instagram), X (Twitter), Facebook, and YouTube.
+Objective:
+I want users to use the Prerequisite Learning System in their studies, so that they can learn their lessons quickly and in an organized way of learning.
+Prerequisite Learning System helps them to realize the reason of their inability to understand why they cannot understand a lesson they are trying hard to complete, This system provides them a list of all possible prerequisites to learn before they want to learn the lesson they are trying to learn and also provide an organized study plan to learn all those prerequisites quickly and effectively.
+I want them to buy my product.
+And for that I want to publish and share social media posts and blog posts on the topics of what and why of the Prerequisite Learning System to make people aware of the prerequisite learning system.
+Scenario:
+=======
+
+For anyone who fails to understand a lesson or a piece of content in spite of several honest and hard efforts.
+
+Expected Solution:
+==============
+
+<span id="outputSlot" class="dynamic-insert">[Insert Your Expectation Here]</span>
+
+Steps:
+=====
+
+Read and understand the given context, role, objective, scenario, and expected solution, play your role, and provide me with the "Expected Solution".</pre>
+          
+          <button class="copy-button" data-target="analysisPrompt">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Dynamic Text Replacement Logic
+      const inputField = document.getElementById('userExpectation');
+      const outputSlot = document.getElementById('outputSlot');
+      const defaultText = "[Insert Your Expectation Here]";
+
+      inputField.addEventListener('input', () => {
+        const val = inputField.value.trim();
+        if (val) {
+            outputSlot.textContent = val;
+        } else {
+            outputSlot.textContent = defaultText;
+        }
+      });
+
+      // 2. Copy Button Logic
+      const promptsContainer = document.getElementById('promptsContainer');
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).innerText; // Using innerText to capture newlines correctly
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;"> </div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
