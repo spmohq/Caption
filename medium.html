@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Library</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --accent-color: #4f46e5; /* Indigo */
+            --accent-hover: #4338ca;
+            --pgp-color: #059669; /* Emerald */
+            --pgp-hover: #047857;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        /* Container for central alignment */
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Card Styles */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .prompt-content {
+            font-size: 1rem;
+            color: var(--text-primary);
+            white-space: pre-wrap; /* Preserves line breaks in the prompts */
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Button Styles */
+        button, .pgp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        /* Copy Button */
+        .btn-copy {
+            background-color: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-copy:hover {
+            background-color: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        .btn-copy.copied {
+            background-color: var(--text-primary);
+            color: #fff;
+        }
+
+        /* PGP Button */
+        .pgp-btn {
+            background-color: var(--pgp-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(5, 150, 105, 0.2);
+            width: 100%; /* Full width on mobile looks better for actions */
+        }
+
+        .pgp-btn:hover {
+            background-color: var(--pgp-hover);
+        }
+
+        /* Responsive Tweaks */
+        @media (min-width: 600px) {
+            .pgp-btn {
+                width: auto; /* Auto width on desktop */
+            }
+        }
+        
+        /* Icons */
+        .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Prompt Toolkit</h1>
+            <p>Optimized for engagement and productivity</p>
+        </header>
+
+        <div class="card-list">
+
+            <!-- Item 1 -->
+            <div class="card">
+                <div class="prompt-content" id="p1">Please polish it and optimize it for engagement.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p1', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="card">
+                <div class="prompt-content" id="p2">Level up this post—make it clearer, punchier, and optimized for high engagement in Blog Post style and tone.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p2', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="card">
+                <div class="prompt-content" id="p3">Make it a complete blog post with title, over-all intro without title, section titles, overall conclusion without title.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p3', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="card">
+                <div class="prompt-content" id="p4">Please enhance it and make the section titles more attractive and according to what the section delivers.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p4', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 5: PGP -->
+            <div class="card" style="border-left: 4px solid var(--pgp-color);">
+                <div class="prompt-content"><strong>Transcreate</strong></div>
+                <div class="card-footer">
+                    <!-- PLACEHOLDER LINK: Replace '#' with the actual Prompt Genie URL -->
+                    <a href="#" class="pgp-btn" target="_blank">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Use Prompt Genie
+                    </a>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="card">
+                <div class="prompt-content" id="p6">Optimized it for Medium.</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p6', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="card">
+                <div class="prompt-content" id="p7">Please give a subtitle and tag set for visibility. Also add the following as the end CTA of this content:
+Want the full step-by-step system to put this into practice?
+I teach the ‘how’ inside my newsletter "One Idea Forward" — so you can actually use this idea in your work and life.
+👉 Join here: https://oneideaforward.substack.com/</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p7', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="card">
+                <div class="prompt-content" id="p8">Now please show me exactly how the final Medium layout would look (title, subtitle, section formatting, and closing line) — ready to paste into my Medium draft editor. Also suggest Medium-style tags (the 5–7 keywords that help with discovery on the platform).</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p8', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+            <!-- Item 9: PGP -->
+            <div class="card" style="border-left: 4px solid var(--pgp-color);">
+                <div class="prompt-content"><strong>Generate feature Image.</strong></div>
+                <div class="card-footer">
+                    <!-- PLACEHOLDER LINK: Replace '#' with the actual Prompt Genie URL -->
+                    <a href="#" class="pgp-btn" target="_blank">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Use Prompt Genie
+                    </a>
+                </div>
+            </div>
+
+            <!-- Item 10 -->
+            <div class="card">
+                <div class="prompt-content" id="p10">What’s an appropriate alt tag for this image that describes it clearly for accessibility purposes?</div>
+                <div class="card-footer">
+                    <button class="btn-copy" onclick="copyText('p10', this)">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copy Prompt
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <div style="text-align:center; margin-top: 40px; color: #9ca3af; font-size: 0.8rem;">
+            &copy; One Idea Forward Toolkit
+        </div>
+    </div>
+
+    <script>
+        function copyText(elementId, btn) {
+            // Get the text content
+            const textToCopy = document.getElementById(elementId).innerText;
+            
+            // Use the clipboard API
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Store original button HTML
+                const originalHtml = btn.innerHTML;
+                
+                // Change button style and text
+                btn.innerHTML = `
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Copied!
+                `;
+                btn.classList.add('copied');
+
+                // Revert back after 2 seconds
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
