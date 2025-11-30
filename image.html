@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Media Image Prompt Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Input Section Styles */
+    .input-section {
+      margin-bottom: 40px;
+    }
+    .input-label {
+      display: block;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    textarea.caption-input {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text-heading);
+      padding: 15px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      resize: vertical;
+      min-height: 100px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    textarea.caption-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+    }
+
+    /* Prompt Cards */
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .description-block {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .description-block h3 {
+      font-size: 1rem;
+      color: var(--text-heading);
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    .description-block ul {
+      list-style-position: inside;
+      padding-left: 10px;
+    }
+
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 400;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+
+    footer {
+        margin-top: 50px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--card-border);
+        padding-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.3rem;
+      }
+      .prompt-text {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Prompt Generator</h1>
+      <p class="subtitle">Enter your caption below to generate tailored AI prompts.</p>
+    </header>
+
+    <main>
+      <!-- Input Section -->
+      <div class="input-section">
+        <label class="input-label" for="captionInput">Input Box Title: Caption</label>
+        <textarea 
+          id="captionInput" 
+          class="caption-input" 
+          placeholder="Paste your social media caption here..."
+        ></textarea>
+      </div>
+
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Prompt Box 1 -->
+        <div class="prompt-card">
+          <h2>Universal Image-Generation Prompt</h2>
+          <div class="description-block">
+            <h3>1. When to use it:</h3>
+            <p>Use this when you want the most accurate, best-quality visual that matches your caption. This is your main go-to prompt for social media posts, carousels, ads, or branded content.</p>
+            <h3>2. Why:</h3>
+            <p>It tells the AI exactly how to interpret the message, mood, audience, benefit, and pain point. Good when you want the image to truly “fit” the caption’s emotional intention.</p>
+          </div>
+          <pre id="prompt1" class="prompt-text">Create a social-media-ready image based on the following caption:
+“{{CAPTION GOES HERE}}”
+
+Guidelines:
+– Do NOT include any text inside the image unless it is essential.
+– Instead, interpret the caption’s message visually.
+– Convey the theme using symbolism, color, mood, and composition.
+– Style: clean, modern, high-contrast, scroll-stopping.
+– Mood should match the caption (for example: relief, empowerment, clarity, productivity, frustration, transformation).
+– Include subtle elements that represent:
+the audience ({{insert audience from caption}})
+the pain point ({{insert pain}})
+the benefit or desired outcome ({{insert benefit}})
+the feature (optional subtle technological element)
+– Keep the design visually clear and branded, but avoid logos unless provided.
+– Format the output as a single high-quality image.</pre>
+          <button class="copy-button" data-target="prompt1">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt Box 2 -->
+        <div class="prompt-card">
+          <h2>Simplified Drop-in Version</h2>
+          <div class="description-block">
+            <h3>1. When to use it:</h3>
+            <p>Use this when you want something fast, simple, and visually appealing without needing any deep interpretation.</p>
+            <h3>2. Good for:</h3>
+            <ul>
+                <li>quickly pairing a caption with a visual</li>
+                <li>TikTok, IG stories, reels where you need a generic aesthetic</li>
+                <li>low-stakes posts</li>
+                <li>when the caption is short and straightforward</li>
+            </ul>
+          </div>
+          <pre id="prompt2" class="prompt-text">Create an image that visually represents this caption with no text in the image:
+“{{caption}}”
+
+Style: modern, aesthetic, high-contrast, scroll-stopping
+Mood: match the caption
+Elements to visualize: audience, pain point, benefit, transformation, core product idea
+No literal text in the image.</pre>
+          <button class="copy-button" data-target="prompt2">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt Box 3 -->
+        <div class="prompt-card">
+          <h2>Advanced Version</h2>
+          <div class="description-block">
+            <h3>1. When to use it:</h3>
+            <p>Use this when you want the AI to truly analyze your caption, break it apart, and produce a visual that directly reflects every component.</p>
+            <h3>2. Best for:</h3>
+            <ul>
+                <li>highly strategic content</li>
+                <li>brand campaigns</li>
+                <li>ad creatives</li>
+                <li>emotionally rich captions</li>
+                <li>captions with multiple elements (pain, benefit, feature, audience)</li>
+            </ul>
+          </div>
+          <pre id="prompt3" class="prompt-text">I will give you a caption.
+
+Extract the following from the caption: product, audience, pain point, benefit, feature, emotion.
+
+Then generate an image that visually represents the emotion and transformation described in the caption, without adding any text inside the image.
+
+Style the image to be clean, modern, and scroll-stopping, suitable for social platforms like Instagram and TikTok.
+
+Here is the caption:
+“{{CAPTION}}”
+
+--------------------
+Example With Inserted Caption:
+
+Create a social-media-ready image based on this caption:
+“Busy freelancers struggling with too many tasks? FlowMaster helps you save time with AI-powered suggestions. Start free trial →”
+
+Make it visual only with no text in the image.
+Show a transformation from chaos to clarity.
+Represent freelancers, overwhelm, and productivity through symbolic imagery.
+Keep the style clean, modern, aesthetic, and high-contrast.</pre>
+          <button class="copy-button" data-target="prompt3">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>
+        <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+    </footer>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const promptsContainer = document.getElementById('promptsContainer');
+      const captionInput = document.getElementById('captionInput');
+      
+      // Store the template strings
+      const templates = {
+        prompt1: `Create a social-media-ready image based on the following caption:
+“{{CAPTION}}”
+
+Guidelines:
+– Do NOT include any text inside the image unless it is essential.
+– Instead, interpret the caption’s message visually.
+– Convey the theme using symbolism, color, mood, and composition.
+– Style: clean, modern, high-contrast, scroll-stopping.
+– Mood should match the caption (for example: relief, empowerment, clarity, productivity, frustration, transformation).
+– Include subtle elements that represent:
+the audience ({{insert audience from caption}})
+the pain point ({{insert pain}})
+the benefit or desired outcome ({{insert benefit}})
+the feature (optional subtle technological element)
+– Keep the design visually clear and branded, but avoid logos unless provided.
+– Format the output as a single high-quality image.`,
+
+        prompt2: `Create an image that visually represents this caption with no text in the image:
+“{{CAPTION}}”
+
+Style: modern, aesthetic, high-contrast, scroll-stopping
+Mood: match the caption
+Elements to visualize: audience, pain point, benefit, transformation, core product idea
+No literal text in the image.`,
+
+        prompt3: `I will give you a caption.
+
+Extract the following from the caption: product, audience, pain point, benefit, feature, emotion.
+
+Then generate an image that visually represents the emotion and transformation described in the caption, without adding any text inside the image.
+
+Style the image to be clean, modern, and scroll-stopping, suitable for social platforms like Instagram and TikTok.
+
+Here is the caption:
+“{{CAPTION}}”
+
+--------------------
+Example With Inserted Caption:
+
+Create a social-media-ready image based on this caption:
+“Busy freelancers struggling with too many tasks? FlowMaster helps you save time with AI-powered suggestions. Start free trial →”
+
+Make it visual only with no text in the image.
+Show a transformation from chaos to clarity.
+Represent freelancers, overwhelm, and productivity through symbolic imagery.
+Keep the style clean, modern, aesthetic, and high-contrast.`
+      };
+
+      // Function to update prompts
+      function updatePrompts() {
+        const userInput = captionInput.value;
+        const insertText = userInput ? userInput : "{{CAPTION GOES HERE}}";
+        const insertTextShort = userInput ? userInput : "{{caption}}";
+        const insertTextCap = userInput ? userInput : "{{CAPTION}}";
+
+        document.getElementById('prompt1').textContent = templates.prompt1.replace('{{CAPTION}}', insertText);
+        document.getElementById('prompt2').textContent = templates.prompt2.replace('{{CAPTION}}', insertTextShort);
+        document.getElementById('prompt3').textContent = templates.prompt3.replace('{{CAPTION}}', insertTextCap);
+      }
+
+      // Listen for input
+      captionInput.addEventListener('input', updatePrompts);
+
+
+      // Copy functionality
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
