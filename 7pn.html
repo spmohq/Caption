@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>7-Point Note Generator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --input-border: #4b5563;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    
+    /* INPUT SECTION STYLES */
+    .inputs-container {
+        display: flex; /* Changed from grid to flex column for full width */
+        flex-direction: column;
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+    .input-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 20px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 4px 16px 0 var(--shadow-color);
+        width: 100%;
+    }
+    .input-group label {
+        display: block;
+        font-weight: 600;
+        color: var(--accent-primary);
+        margin-bottom: 12px;
+        font-size: 1rem;
+    }
+    /* Styles for Textarea */
+    .input-group textarea {
+        width: 100%;
+        min-height: 120px; /* Increased height for paragraphs */
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        resize: vertical; /* Allows user to drag to resize height */
+    }
+    .input-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+    }
+    .input-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* PROMPT CARD STYLES */
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      min-height: 250px;
+    }
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text {
+          font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>7-Point Note Generator</h1>
+      <p class="subtitle">Fill in the details below (supports paragraphs) to generate your formatted prompt.</p>
+    </header>
+
+    <main>
+      <!-- Input Fields Section -->
+      <div class="inputs-container">
+        
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-people">1. People</label>
+                <textarea id="input-people" placeholder="Describe the people..." class="dynamic-input" data-placeholder="[People]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-problem">2. Problem</label>
+                <textarea id="input-problem" placeholder="Describe the problem..." class="dynamic-input" data-placeholder="[Problem]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-reason">3. Reason of Problem</label>
+                <textarea id="input-reason" placeholder="Explain the reason..." class="dynamic-input" data-placeholder="[Reason of Problem]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-solution">4. Solution</label>
+                <textarea id="input-solution" placeholder="Describe the solution..." class="dynamic-input" data-placeholder="[Solution]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-process">5. Process</label>
+                <textarea id="input-process" placeholder="Explain the process..." class="dynamic-input" data-placeholder="[Process]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-sce">6. SC/E</label>
+                <textarea id="input-sce" placeholder="SC/E details..." class="dynamic-input" data-placeholder="[SC/E]"></textarea>
+            </div>
+        </div>
+
+        <div class="input-card">
+            <div class="input-group">
+                <label for="input-sce-for">7. SC/E - For what</label>
+                <textarea id="input-sce-for" placeholder="For what purpose..." class="dynamic-input" data-placeholder="[For what]"></textarea>
+            </div>
+        </div>
+
+      </div>
+
+      <!-- Prompt Generation Section -->
+      <div class="prompts-container" id="promptsContainer">
+        <div class="prompt-card">
+          <h2>7-Point Note Generator</h2>
+          <pre id="analysisPrompt" class="prompt-text">1, P: 
+[People]
+2, P:
+[Problem]
+3, ROP:
+[Reason of Problem]
+4, S:
+[Solution]
+5, P:
+[Process]
+6, SC/E:
+[SC/E]
+7, SC/E For what:
+[For what]</pre>
+          <button class="copy-button" data-target="analysisPrompt">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // --- Logic for Real-time Prompt Update ---
+      const inputs = document.querySelectorAll('.dynamic-input');
+      const outputArea = document.getElementById('analysisPrompt');
+
+      // Helper to get value or default placeholder
+      const getVal = (id) => {
+        const el = document.getElementById(id);
+        const placeholder = el.getAttribute('data-placeholder');
+        const val = el.value.trim();
+        return val.length > 0 ? val : placeholder;
+      };
+
+      const updateOutput = () => {
+        const text = `1, P: 
+${getVal('input-people')}
+2, P:
+${getVal('input-problem')}
+3, ROP:
+${getVal('input-reason')}
+4, S:
+${getVal('input-solution')}
+5, P:
+${getVal('input-process')}
+6, SC/E:
+${getVal('input-sce')}
+7, SC/E For what:
+${getVal('input-sce-for')}`;
+
+        outputArea.textContent = text;
+      };
+
+      // Add event listeners to all inputs
+      inputs.forEach(input => {
+        input.addEventListener('input', updateOutput);
+      });
+
+
+      // --- Logic for Copy Button ---
+      const promptsContainer = document.getElementById('promptsContainer');
+
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;">&nbsp;</div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
