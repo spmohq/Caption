@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sales Asset Generator</title>
+  <!-- Generic icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+        border-color: var(--accent-primary);
+    }
+    .prompt-card h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-number {
+        background: var(--accent-primary);
+        color: var(--bg-gradient-end);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+    
+    /* Input and Output Area Styles */
+    .prompt-text, .text-input {
+      background-color: var(--code-bg);
+      padding: 15px;
+      border-radius: 10px;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      border: 1px solid var(--card-border);
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .text-input {
+        height: 50px;
+        font-size: 1.1rem;
+    }
+
+    .text-input:focus {
+        border-color: var(--accent-primary);
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .prompt-text {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 120px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    /* Button Styles */
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.1rem;
+      }
+      .prompt-text, .text-input {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Sales Asset Generator</h1>
+      <p class="subtitle">Enter your keyword once to generate 5 strategic prompts.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Input Card -->
+        <div class="prompt-card" style="border-color: var(--accent-primary);">
+          <h2><span class="card-number">1</span> Your Keyword</h2>
+          <input type="text" id="keywordInput" class="text-input" placeholder="[Insert Your Keyword Here]">
+        </div>
+
+        <div style="border-bottom: 1px solid var(--card-border); margin: 10px 0;"></div>
+
+        <!-- Prompt 1 -->
+        <div class="prompt-card">
+          <h2><span class="card-number">1</span> Landing Page Copy Generator</h2>
+          <pre id="p1" class="prompt-text dynamic-prompt">You are a professional conversion copywriter and landing page strategist. Keeping in line with the original niche/keyword and based on the following pain point content: [Insert Your Keyword Here], create a high-converting landing page headline and persuasive sales copy that directly addresses the reader’s pain point. The headline should be concise, emotionally compelling, and optimized to immediately capture attention. The sales copy should flow naturally, starting with an empathetic opening that resonates with the reader’s struggles and transitions into the benefits and solutions offered. Use conversational, persuasive language that feels personal and relatable, avoiding robotic or overly formal tones. Incorporate a clear structure with a problem-agitation-solution framework, highlighting the emotional and practical benefits of taking action. End with a strong call-to-action that reinforces urgency or curiosity and motivates readers to take the next step. Do not include testimonials or other forms of social proof. Ensure the copy is engaging, emotionally resonant, and optimized for conversions. Do not use horizontal lines in the output.</pre>
+          <button class="copy-button" data-target="p1">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt 2 -->
+        <div class="prompt-card">
+          <h2><span class="card-number">2</span> Landing Page Headline Generator</h2>
+          <pre id="p2" class="prompt-text dynamic-prompt">You are a professional copywriter, NLP specialist, and expert in crafting psychologically impactful headlines for sales and landing pages. Keeping in line with the original niche/keyword and based on the following pain point content: [Insert Your Keyword Here], create 10 attention-grabbing headline options that leverage loaded language, NLP techniques, and emotional triggers to captivate the reader. Each headline should be designed to hook the reader instantly by tapping into their deepest fears, desires, or frustrations, using persuasive and emotionally charged phrasing. Incorporate techniques such as urgency, scarcity, curiosity gaps, or sensory-rich language to create a compelling call to attention. Use bold statements, rhetorical questions, or transformative promises that speak directly to the reader’s pain point while igniting curiosity and the desire to take immediate action. Ensure each headline is concise, impactful, and carefully crafted to leave a lasting impression. Do not use horizontal lines in the output.</pre>
+          <button class="copy-button" data-target="p2">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt 3 -->
+        <div class="prompt-card">
+          <h2><span class="card-number">3</span> Image Generation Prompt Generator</h2>
+          <pre id="p3" class="prompt-text dynamic-prompt">You are an expert in creating detailed and emotionally resonant prompts for AI image generation software specializing in ultra-realistic visuals that align perfectly with the tone, themes, and emotional core of a social media post. You are also a social media marketing expert with a focus on create high ctr images optimized for social media platforms. Based on the content in the social media posts regarding [Insert Your Keyword Here], generate 5 distinct and richly descriptive prompts for ultra-realistic images that convey the key messages of the social media posts. Each prompt should focus on crafting immersive, lifelike scenes without including text, logos, or watermarks. Describe each image with exceptional detail, including the environment, atmosphere, lighting, and textures, to ensure the visuals evoke a strong emotional connection. Specify elements such as time of day, color palette, and mood while ensuring the setting, objects, or characters align with the overarching narrative. Incorporate natural human expressions, movements, and interactions where relevant, ensuring every aspect of the image feels authentic and relatable. Provide details on background elements, subtle actions, or symbolic objects that enhance depth and meaning without overwhelming the focal point. Each prompt should result in a unique and captivating image that tells a story and visually represents the emotions, challenges, or aspirations conveyed in the social media post. Ensure diversity in the scenes, highlighting different perspectives, styles, and compositions that evoke a range of emotions and maintain alignment with the core message. The output should prioritize creativity, emotional resonance, and visual sophistication, producing stunning, high-quality images that leave a lasting impression and optimized for high social media click-through rate.</pre>
+          <button class="copy-button" data-target="p3">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt 4 -->
+        <div class="prompt-card">
+          <h2><span class="card-number">4</span> Call-To-Action Prompt</h2>
+          <pre id="p4" class="prompt-text dynamic-prompt">You are a professional copywriter and conversion strategist specializing in creating highly effective calls-to-action (CTAs). Keeping in line with the original niche/keyword and based on the following pain point content: [Insert Your Keyword Here], write 3 compelling, high-converting CTA options that seamlessly align with the tone and message of the content. Each CTA should directly address the reader’s pain point, reinforce the value of taking action, and create a sense of urgency or curiosity. Use conversational, persuasive language that feels personal and authentic, avoiding robotic or overly formal tones. Include action-oriented phrases like 'Click here to [specific benefit]' or 'Learn how to [specific outcome]' while ensuring the CTAs feel like a natural extension of the blog post. Keep each CTA concise (1-3 sentences) and emotionally resonant, making the reader feel understood and motivated to click through to the next step. Present the CTAs without horizontal lines or explicit separations to maintain a seamless and visually cohesive format. Do not use horizontal lines in the output.</pre>
+          <button class="copy-button" data-target="p4">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt 5 -->
+        <div class="prompt-card">
+          <h2><span class="card-number">5</span> Statistics Generator</h2>
+          <pre id="p5" class="prompt-text dynamic-prompt">You are a professional researcher and data strategist specializing in uncovering compelling statistics to validate and amplify the impact of pain points. Keeping in line with the original niche/keyword and based on the following pain point content: [Insert Your Keyword Here], identify and provide relevant, credible statistics that highlight the prevalence, severity, or consequences of this pain point. Focus on finding data from trusted sources such as industry reports, academic studies, or government publications. Include statistics that evoke an emotional response, such as percentages, real-world examples, or trends that underscore the urgency or importance of addressing the pain point. Ensure the findings are recent, accurate, and presented in a clear, concise format that can be seamlessly integrated into persuasive copy or content. Avoid using vague or generalized data, and prioritize information that directly supports the pain point’s emotional and practical significance. Do not use horizontal lines in the output.</pre>
+          <button class="copy-button" data-target="p5">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const keywordInput = document.getElementById('keywordInput');
+      const dynamicPrompts = document.querySelectorAll('.dynamic-prompt');
+      const placeholder = '[Insert Your Keyword Here]';
+
+      // Store the initial template text for each prompt
+      dynamicPrompts.forEach(prompt => {
+        prompt.dataset.template = prompt.textContent;
+      });
+
+      // Update logic
+      const updatePrompts = () => {
+        const userInput = keywordInput.value.trim();
+        const replacement = userInput.length > 0 ? userInput : placeholder;
+
+        dynamicPrompts.forEach(prompt => {
+            // Replace all instances of the placeholder in the template with user input
+            // Using regex with 'g' flag to replace globally
+            const template = prompt.dataset.template;
+            // Escape special regex characters in the placeholder if necessary, 
+            // though [] are usually safe in simple replaceAll strings, regex is safer for global.
+            // Using modern replaceAll is simplest:
+            prompt.textContent = template.split(placeholder).join(replacement);
+        });
+      };
+
+      // Listen for changes
+      keywordInput.addEventListener('input', updatePrompts);
+
+      // Copy Functionality
+      const promptsContainer = document.getElementById('promptsContainer');
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;">&nbsp;</div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
