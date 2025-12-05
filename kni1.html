@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Influencer & Keyword Researcher</title>
+  <link rel="icon" href="spm.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --input-border: #4b5563;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .step-badge {
+      font-size: 0.8rem;
+      background: var(--accent-primary);
+      color: var(--bg-gradient-end);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+    .custom-input {
+      width: 100%;
+      padding: 12px 15px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      color: var(--text-heading);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .custom-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+    }
+
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    /* Scrollbar for prompt text */
+    .prompt-text::-webkit-scrollbar {
+      width: 8px;
+    }
+    .prompt-text::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+    .prompt-text::-webkit-scrollbar-thumb {
+      background: var(--input-bg);
+      border-radius: 4px;
+    }
+    .prompt-text::-webkit-scrollbar-thumb:hover {
+      background: var(--input-border);
+    }
+
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: auto;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.25rem;
+      }
+      .prompt-text {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Influencer Research Tool</h1>
+      <p class="subtitle">Generate an influencer and keyword research prompt for any social platform.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Input Section -->
+        <div class="prompt-card">
+          <h2>
+            Input Details
+            <span class="step-badge">Step 1</span>
+          </h2>
+          <div class="input-group">
+            <label for="platformInput">Social Media Site Name</label>
+            <input type="text" id="platformInput" class="custom-input" placeholder="e.g., LinkedIn, Twitter, Instagram" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Prompt Section -->
+        <div class="prompt-card">
+          <h2>
+            Keywords and Influencers
+            <span class="step-badge">Step 2</span>
+          </h2>
+          <!-- The content here is populated via JS based on the template below -->
+          <pre id="analysisPrompt" class="prompt-text"></pre>
+          
+          <button class="copy-button" data-target="analysisPrompt">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;"> </div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+  <script>
+    // --- Dynamic Prompt Logic ---
+    const platformInput = document.getElementById('platformInput');
+    const promptDisplay = document.getElementById('analysisPrompt');
+
+    // Store the base template in a variable. 
+    // {{PLATFORM}} will be replaced by user input.
+    const promptTemplate = `Context:
+========
+
+My Audience:
+Existing or aspiring affiliate marketers, solopreneurs, and small business owners.
+
+Their Problem:
+They feel stuck, confused, and unsure about which direction to take.
+
+Why This Problem Exists:
+Being good at their craft isn’t enough. They also need the ability to design their own path — to activate their “inner architect” who can shape the vision, choose the direction, and turn their work into real progress. Most people struggle because they haven’t unlocked that guiding clarity within themselves.
+
+The Solution:
+A personalized promotion plan that shows them:
+
+- Which marketing channels to focus on
+- How to grow their traffic or audience
+- What type of content or approach fits their niche
+- A simple, step-by-step plan they can follow
+
+Everything is practical and realistic.
+
+How the Solution Works (Process):
+
+Step #1: I provide the personalized promotion plan.
+Step #2: They follow the plan to promote their business.
+
+Sales Letter Copy:
+🌿 Free Strategic Promotion Plan Experiment
+Created by Siva Prasad Mukherjee
+Hi! I’m Siva 👋
+I’m developing a system that creates simple, practical promotion strategies for online businesses — especially affiliate marketers, solopreneurs, and small business owners.
+Before refining it further, I want to test it with 10 real projects to see where the system works well and where it needs improvement.
+This is a small, honest experiment, not a business offer.
+🌱 Why I’m Offering This for Free
+I’m testing my system
+I want to see how it performs on real projects
+I’m not selling anything
+I will stop after 10 experiments
+There are no upsells, no funnels, no commitments
+Just honest work and genuine learning.
+👤 Who This Is For
+You’ll be a good fit if you are:
+An affiliate marketer (new or experienced)
+A solopreneur
+A small business owner
+A creator (YouTube, Instagram, TikTok, blog, etc.)
+Someone planning to start an online project
+Your business can be new or established — both are welcome.
+✨ What You Will Receive (Free)
+A personalized promotion plan that includes:
+Which marketing channels to focus on
+How to grow traffic or audience
+What type of content or approach fits your niche
+A simple, step-by-step plan you can follow
+(Optional) small adjustments if you want feedback based on results
+Everything is kept practical and realistic.
+⏳ Your Time Commitment
+Very low. I only need:
+A short application (2–3 minutes)
+Basic information about your project
+A simple message telling me what was unclear or confusing in the plan
+That’s it.
+📝 What I Ask in Return
+Just honest feedback.
+What worked
+What didn’t
+What was unclear or missing
+(Optional) A short testimonial if you genuinely feel the plan helped you.
+Your information will only be used to improve the system — nothing else.
+📬 Want to Join the Experiment?
+Apply here:
+ 👉 https://forms.gle/Dd5ZJuvPiJEgvdn48
+I’ll review each application personally and reply to selected participants.
+🌼 A Small Note
+I prefer a simple, non-salesy approach.
+No branding, no marketing funnels — just a sincere experiment.
+If you join, I’ll do my best to help, and you’ll never be pressured for anything.
+Thanks for reading,
+– Siva Prasad Mukherjee
+
+Read and understand the context, detect my niche and provide 20 major accounts, influencers, companies, or thought leaders in this niche on {{PLATFORM}}.
+
+For each, include:
+
+- Name
+- 1–2 sentence explanation of why they matter or what they’re known for
+- Direct profile URL on the specified site (or best available social/website link if the exact profile isn’t available)
+
+Criteria:
+
+- Prioritize accounts that meaningfully represent market trends, industry conversations, and buyer behavior.
+- Favor those with high engagement, strong authority, or significant influence in the niche.
+
+Format the results as two clean bullet lists.`;
+
+    function updatePrompt() {
+        // Get value or default to placeholder text
+        const platformValue = platformInput.value.trim() || "[Social Media Site Name]";
+        
+        // Replace placeholder in template
+        const finalPrompt = promptTemplate.replace('{{PLATFORM}}', platformValue);
+        
+        // Update DOM
+        promptDisplay.textContent = finalPrompt;
+    }
+
+    // Event Listener for typing
+    platformInput.addEventListener('input', updatePrompt);
+
+    // Initial render
+    updatePrompt();
+
+
+    // --- Copy Button Logic (from original) ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const promptsContainer = document.getElementById('promptsContainer');
+
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
