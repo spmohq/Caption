@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>42-Day Content Strategy</title>
+  <link rel="icon" href="spm.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 850px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompts-container {
+      display: grid;
+      gap: 30px;
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .prompt-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 var(--shadow-color);
+    }
+    .prompt-card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-heading);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 400;
+      flex-grow: 1;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+      /* Scrollable area for long prompts */
+      max-height: 600px; 
+      overflow-y: auto;
+    }
+
+    /* Scrollbar styling */
+    .prompt-text::-webkit-scrollbar {
+        width: 8px;
+    }
+    .prompt-text::-webkit-scrollbar-track {
+        background: var(--card-bg);
+        border-radius: 4px;
+    }
+    .prompt-text::-webkit-scrollbar-thumb {
+        background: var(--input-bg);
+        border-radius: 4px;
+    }
+    .prompt-text::-webkit-scrollbar-thumb:hover {
+        background: #4b5563;
+    }
+
+    .copy-button {
+      align-self: flex-end;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.05);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+    }
+    .copy-button .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .copy-button .copied-icon {
+        display: none;
+    }
+    .copy-button.copied .copy-icon {
+        display: none;
+    }
+    .copy-button.copied .copied-icon {
+        display: inline-block;
+    }
+    
+    footer.footer {
+        margin-top: auto;
+        padding-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .prompt-card h2 {
+        font-size: 1.4rem;
+      }
+      .prompt-text {
+          font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>42-Day Content Strategy</h1>
+      <p class="subtitle">Generate a comprehensive content calendar aligned with business principles.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+        
+        <!-- Prompt Box 1 -->
+        <div class="prompt-card">
+          <h2>Main Prompt</h2>
+          <pre id="prompt1" class="prompt-text">
+A. CONTEXT
+==========
+
+1, Audience: Students, teachers, parents, homemakers, and professionals who try to learn a topic or lesson but still cannot understand it, even after several sincere attempts.
+
+2, Problem: They experience repeated difficulty understanding a topic or lesson and do not know why it feels hard or how to fix the problem.
+
+3, Cause of the Problem: They lack full mastery of the prerequisite concepts that are necessary to understand the topic or lesson.
+
+4, Solution: Identify the missing prerequisite concepts, learn those foundational skills quickly and clearly, and then return to the main topic or lesson for effective understanding.
+
+5, Process of Solving the Problem: Follow these steps:
+
+Step#1: Go to The Prerequisite Learning System App at: https://app.spm.in.net/
+Step#2: Enter your Age in the first input box.
+Step#3: Type your Preferred Language.
+Step#4: Paste or type the Topic You Want to Understand into the topic box.
+Step#5: Copy the customized prompt the app creates for you.
+Step#6: Paste that prompt into ChatGPT (or any AI model you use). Hit “Enter.”
+Step#6: Read the response — it will reveal your missing prerequisites, teach them to you, give you a study plan, and re-explain your topic clearly.
+…that’s it. 🎉
+
+6, Here's the reusable prompt template the app uses to generate a prompt tailored to the users:
+
+"SYSTEM:
+You are the Prerequisite Learning System. Your job is to help the user understand why they are struggling with a topic by identifying which foundational concepts (prerequisites) they may not have fully learned. You teach missing foundations gently and clearly, boosting the learner’s confidence and sense of progress.
+
+IMPORTANT:
+Always reply entirely in the user’s preferred language, and tailor your explanations to the user’s age.
+
+USER INPUTS:
+— Age: [AGE]
+— Preferred Language: [LANGUAGE]
+— Topic: 
+[TOPIC]
+
+TASKS:
+1. Analyze the user’s topic and break it into the essential prerequisite concepts.
+2. List all prerequisites required to understand the topic.
+3. Identify which prerequisites the user is likely missing.
+   - Make reasonable guesses based on typical gaps for learners of the user’s age.
+   - Only ask one short diagnostic question if absolutely necessary.
+4. Teach each missing prerequisite in simple, beginner-friendly language with no unexplained jargon.
+5. Provide a short 3–5 step study plan to help the user learn the prerequisites in order.
+6. Re-explain the main topic clearly, assuming the user now understands the prerequisites.
+
+STYLE GUIDELINES:
+— Warm, encouraging, supportive
+— Beginner-friendly wording
+— Brief, clear explanations
+— No jargon unless defined simply
+— Reassure the user that difficulty is caused by missing foundations, not lack of intelligence
+— Adapt examples to the user’s age and preferred language
+
+OUTPUT FORMAT:
+1. List of essential prerequisites
+2. Mark which prerequisites the user is likely missing
+3. Teach the missing prerequisites in simple terms
+4. Provide a 3–5 step study plan
+5. Re-explain the main topic clearly and confidently"
+
+---
+
+B. My Business Principles
+=========================
+
+1. Honesty & Transparency
+   Communicate simply and truthfully. No exaggeration or unrealistic claims. All statements must be clear, factual, and easy to understand.
+
+2. Simplicity & Minimalism
+   Avoid unnecessary complexity. Prioritize clarity, brevity, and directness in communication, strategies, and workflows.
+
+3. Quality of Work Over Hype
+   Focus on effective, ethical, data-driven work rather than flashy or salesy promotion. Emphasize real value and measurable improvements.
+
+4. Ethical & Professional Conduct
+   Avoid anything illegal, unethical, or manipulative. Use marketing methods rooted in integrity, transparency, and respect.
+
+5. Selective Client Engagement
+   Work only with clients who respect the process and cooperate. Do not chase clients or accept projects that conflict with ethics or expertise.
+
+6. Trust the Process, Not Pressure
+   Do not force outcomes or try to impress. Let consistent, honest work attract the right opportunities.
+
+7. Learn From Every Experiment
+   Each project or test must produce a clear insight. Maintain simple documentation of hypotheses, actions, results, and lessons.
+
+8. Quiet, Consistent Visibility
+   Share insights, progress, and learnings calmly and transparently — without hype, exaggeration, or aggressive marketing.
+
+9. Maintain Boundaries
+   Set clear expectations and limitations. Avoid overcommitting, overexplaining, or compromising your principles.
+
+10. Think Less, Do More
+    Avoid overthinking, perfectionism, and excessive planning. Favor simple, consistent action.
+
+Instruction:
+Please create all responses, strategies, and suggestions in alignment with my Business Principles listed above.
+
+---
+
+C. Minimalist Ethical Impact Writing Style
+==========================================
+
+Please follow this communication style in all responses:
+
+You must apply all 10 rules of the style guide. Do not skip, soften, or ignore any point.
+
+Important:
+Only include the checklist explaining how each rule was applied if I specifically ask for a rewrite.
+
+1. Tone & Voice
+
+Calm, clear, grounded, and human.
+Confident without hype or exaggeration.
+Warm and respectful, never salesy or pressuring.
+
+2. Simplicity
+
+Short, clean sentences.
+1–2 sentence paragraphs.
+Simple, accessible vocabulary.
+
+3. Reader-Focused
+
+Speak to “you.”
+Offer clarity and value without manipulation.
+Empower through insight, not hype.
+
+4. Insight-First Approach
+
+Start sections with a simple truth, practical insight, or clear observation.
+
+5. Structure
+
+Use the pattern: Context → Insight → Action → Outcome.
+Always keep the explanation honest and grounded.
+
+6. Ethical Empowerment
+
+Avoid fear, pressure, guilt, or hype.
+Respect the reader’s autonomy.
+Encourage progress through clarity, not persuasion.
+
+7. Honest Headlines
+
+Simple, direct, truthful.
+No clickbait or emotional manipulation.
+
+8. Vocabulary Standards
+
+Use: clarity, simplify, improve, progress, understand, insight, refine, build, steady, practical.
+Avoid: revolutionary, explosive, guaranteed, secret, ultimate.
+
+9. Emotional Tone
+
+Anchor communication in: calm, clarity, relief, grounded confidence, steady progress.
+Avoid dramatic or manipulative emotional cues.
+
+10. Signature Style
+
+Quiet impact.
+Transparent, useful, minimal.
+Insight-driven, not performance-driven.
+Always aligned with honesty, ethics, and simplicity.
+
+---
+
+Task:
+Please review the ‘Context’, ‘My Business Principles’, ‘My Minimalist EI Writing Style’, and using the 42-Day Content Framework provided below, generate 42 tailored content ideas for my target audience. Each idea must follow the specific content type assigned to that day.
+
+Output Format (MANDATORY):
+For each of the 42 days, use this exact 3-line format:
+
+### DAY X
+
+* Content Type: [Content type for that day]
+* Example: [Tailored content idea, 1–2 lines, no "I/me/my"]
+
+Do not add anything else.
+Do not change the format.
+Do not combine multiple days together.
+Each day must be separate and follow the same 3-line pattern.
+
+Content Rules:
+
+* Days 1–21 = WHAT & WHY content (concepts, insights, awareness, explanations).
+* Days 22–42 = HOW & WITH EXACTLY WHAT content (execution, steps, tools, methods).
+* Each Example must be audience-focused, 1–2 lines, clear, specific, and helpful.
+* Do NOT use "I," "me," or "my" anywhere.
+* Do NOT summarize the framework.
+* Output only the 42 formatted content ideas, nothing else.
+
+42-DAY CONTENT FRAMEWORK
+
+WHAT & WHY CONTENT (Days 1–21)
+DAY 1 — Pain Point Insight
+DAY 2 — Common Misconception
+DAY 3 — Industry Observation
+DAY 4 — Problem Breakdown
+DAY 5 — Thought Insight
+DAY 6 — High-Value Question
+DAY 7 — General/External Story
+DAY 8 — Concept Framework
+DAY 9 — Myth-Busting
+DAY 10 — Beginner Mistakes
+DAY 11 — Do/Don't Principles
+DAY 12 — Concept Walkthrough
+DAY 13 — Useful Resources (Overview)
+DAY 14 — Trend or Shift
+DAY 15 — Strong Industry Opinion
+DAY 16 — Deep Concept Teaching
+DAY 17 — Audience Mistakes (Patterns)
+DAY 18 — Principle or Philosophy
+DAY 19 — Observational Insight
+DAY 20 — Hidden Audience Desire
+DAY 21 — Industry Reflection
+
+HOW & WITH EXACTLY WHAT CONTENT (Days 22–42)
+DAY 22 — How to Solve the Pain Point
+DAY 23 — How to Correct the Misconception
+DAY 24 — How to Respond to the Industry Pattern
+DAY 25 — How to Overcome the Roadblock
+DAY 26 — Step-by-Step Tactical Tip
+DAY 27 — How to Address the Audience Question
+DAY 28 — How to Apply the General Story Lesson
+DAY 29 — 3–5 Step Practical Framework
+DAY 30 — How to Replace the Myth with Truth
+DAY 31 — How to Avoid the Beginner Mistakes
+DAY 32 — How to Implement the Do/Don't Principles
+DAY 33 — Practical Micro Tutorial
+DAY 34 — Tools/Resources + How to Use Them
+DAY 35 — How to Adapt to the Trend
+DAY 36 — How to Apply the Strong Industry Opinion
+DAY 37 — Applied Deep Teaching (Execution)
+DAY 38 — How to Avoid Audience Pitfalls
+DAY 39 — How to Apply the Principle or Philosophy
+DAY 40 — How to Model Successful Behaviors
+DAY 41 — How to Fulfill Hidden Audience Desire
+DAY 42 — How to Prepare for the Industry's Future
+
+Final Output Expected:
+A numbered list (1–42) of tailored content ideas, each following the exact 3-line format.</pre>
+          <button class="copy-button" data-target="prompt1">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+        <!-- Prompt Box 2 -->
+        <div class="prompt-card">
+          <h2>Follow-up Prompt</h2>
+          <pre id="prompt2" class="prompt-text">Prompt:
+
+Please generate 21 additional WHAT & WHY content ideas using the exact 3-line DAY format below. 
+Each idea must focus on one of the following content types: value insight, external/general story, opinion/hot take, win, or audience question. 
+Each idea must be audience-focused, 1–2 lines long, and must not contain “I/me/my.” 
+Use the DAY numbers 1–21 and follow the format exactly.
+
+DAY X
+- Content Type: [value insight / story / opinion-hot take / win / question]
+- Example: [1–2 line tailored WHAT & WHY idea]</pre>
+          <button class="copy-button" data-target="prompt2">
+            <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+            <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+            <span class="button-text">Copy Prompt</span>
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const promptsContainer = document.getElementById('promptsContainer');
+
+      // Event delegation for the copy button
+      promptsContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.copy-button');
+        if (!button) return;
+
+        const targetId = button.dataset.target;
+        const textToCopy = document.getElementById(targetId).textContent;
+        const buttonTextEl = button.querySelector('.button-text');
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const originalText = buttonTextEl.textContent;
+          buttonTextEl.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            buttonTextEl.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy text. Please try again.');
+        });
+      });
+    });
+  </script>
+
+  <footer class="footer">
+      <div style="padding-top: 30px;">&nbsp;</div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+  </footer>
+
+</body>
+</html>
