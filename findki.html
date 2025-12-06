@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Keywords</title>
+  <link rel="icon" href="spm.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --input-bg: #374151;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .container { max-width: 850px; width: 100%; margin: 0 auto; flex-grow: 1; }
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { font-size: 2.5rem; font-weight: 700; color: var(--text-heading); margin-bottom: 8px; }
+    p.subtitle { color: var(--text-secondary); }
+    .prompts-container { display: grid; gap: 22px; }
+    .prompt-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; box-shadow: 0 8px 32px 0 var(--shadow-color); backdrop-filter: blur(12px); padding: 20px; display: flex; flex-direction: column; }
+    .prompt-card h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-heading); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--card-border); }
+    .prompt-text { background-color: var(--code-bg); padding: 16px; border-radius: 10px; white-space: pre-wrap; font-family: 'Source Code Pro', monospace; font-size: 1rem; color: var(--text-primary); font-weight: 600; margin-bottom: 14px; border: 1px solid var(--card-border); }
+    .copy-button { align-self: flex-end; padding: 10px 18px; font-size: 0.9rem; font-weight: 600; color: var(--bg-gradient-end); background-color: var(--accent-primary); border: none; border-radius: 8px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+    .copy-button:hover { background-color: var(--accent-hover); }
+    .copy-button.copied { background-color: var(--accent-success); }
+    .input-row { display: flex; gap: 12px; align-items: flex-start; }
+    label { display:block; font-size:0.9rem; color: var(--text-secondary); margin-bottom:6px; }
+    .input-field { background: var(--input-bg); border:1px solid var(--card-border); color: var(--text-primary); padding:10px 12px; border-radius:8px; font-size:0.95rem; width:100%; }
+    .small-note { font-size:0.85rem; color:var(--text-secondary); margin-top:8px; }
+    footer { padding-top: 30px; }
+    @media (max-width:600px){ body{padding:20px;} h1{font-size:2rem;} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Find Keywords and Influencers</h1>
+      <p class="subtitle">from context.</p>
+    </header>
+
+    <main>
+      <div class="prompts-container" id="promptsContainer">
+
+        <!-- Input Box 1: appears before Prompt Box 1 -->
+        <div class="prompt-card">
+          <h2>Insert your context here</h2>
+          <label for="inputContext">Input:</label>
+          <textarea id="inputContext" class="input-field" rows="4" placeholder="[Insert your context here]"></textarea>
+          <div class="small-note">This value will populate the <strong>Main Prompt</strong> in real time.</div>
+        </div>
+
+        <!-- Prompt Box 1 -->
+        <div class="prompt-card">
+          <h2>Find Keywords</h2>
+          <pre id="prompt1" class="prompt-text">Context:  
+[Insert your context here]
+
+Task — Extract Topics & Keywords for Engagement
+
+Based on my context above, do the following:
+
+1. Extract the key details about who I am, what I talk about, and what themes naturally show up in my work or worldview.
+    
+2. Identify the primary topics, the ideal audience for my online presence, and the main problems or conversations this audience is engaged in.
+    
+3. Suggest 3–5 core discussion topics I should consistently join online to build _visibility, familiarity, and authority_ in an authentic way.
+    
+4. Provide 10–12 commonly used keywords or hashtags I should search for on social platforms to find high-quality posts where I can leave meaningful comments and replies. Keep the list focused—no long or overly detailed lists.
+    
+Notes for ChatGPT:
+
+Please keep the output concise, practical, and immediately usable.  
+Your goal is to help me find ongoing conversations where my authentic contributions will be seen by the right people.</pre>
+          <button class="copy-button" data-target="prompt1">Copy Prompt</button>
+        </div>
+
+        <!-- Prompt Box 2 -->
+        <div class="prompt-card">
+          <h2>Follow-up 1</h2>
+          <pre id="prompt2" class="prompt-text">Are these keywords ideals for searching social media posts related to my niche topic?</pre>
+          <button class="copy-button" data-target="prompt2">Copy Prompt</button>
+        </div>
+
+        <!-- Prompt Box 3 -->
+        <div class="prompt-card">
+          <h2>Follow-up 2</h2>
+          <pre id="prompt3" class="prompt-text">Give me a clean, sharp, universal keyword set optimized for my niche topic (My Go-To List).</pre>
+          <button class="copy-button" data-target="prompt3">Copy Prompt</button>
+        </div>
+
+        <!-- Input Box 2: appears before Prompt Box 4 -->
+        <div class="prompt-card">
+          <h2>Insert Platform Name</h2>
+          <label for="inputPlatform">Input:</label>
+          <input id="inputPlatform" class="input-field" placeholder="[Platform Name]" />
+          <div class="small-note">This value will populate Prompt Box 4 in real time.</div>
+        </div>
+
+        <!-- Prompt Box 4 -->
+        <div class="prompt-card">
+          <h2>Follow-up 3 - Find Influencers</h2>
+          <pre id="prompt4" class="prompt-text">I want to follow 20 major accounts on [Platform Name] who regularly post about the core topics identified in this universal keyword set, so I can engage with their content.
+
+Please provide:
+
+A bullet list of 20 accounts
+Each item should include: Account Name + Profile Link + 1-sentence description of what they post and why they’re relevant for my visibility goals.</pre>
+          <button class="copy-button" data-target="prompt4">Copy Prompt</button>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>
+      <div style="padding-top: 20px;"></div>
+      <center><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p></center>
+    </footer>
+  </div>
+
+  <script>
+    // Wire up copy buttons (delegation)
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('promptsContainer');
+      container.addEventListener('click', e => {
+        const btn = e.target.closest('.copy-button');
+        if (!btn) return;
+        const targetId = btn.dataset.target;
+        const text = document.getElementById(targetId).textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+        }).catch(err => { alert('Copy failed — please select & copy manually.'); console.error(err); });
+      });
+
+      // Live bindings for Input Box 1 -> Prompt 1 (context)
+      const inputContext = document.getElementById('inputContext');
+      const prompt1 = document.getElementById('prompt1');
+
+      function updatePrompt1(){
+        const val = inputContext.value.trim() || '[Insert your context here]';
+        const base = `Context:  \n${val}\n\nTask — Extract Topics & Keywords for Engagement\n\nBased on my context above, do the following:\n\n1. Extract the key details about who I am, what I talk about, and what themes naturally show up in my work or worldview.\n    \n2. Identify the primary topics, the ideal audience for my online presence, and the main problems or conversations this audience is engaged in.\n    \n3. Suggest 3–5 core discussion topics I should consistently join online to build _visibility, familiarity, and authority_ in an authentic way.\n    \n4. Provide 10–12 commonly used keywords or hashtags I should search for on social platforms to find high-quality posts where I can leave meaningful comments and replies. Keep the list focused—no long or overly detailed lists.\n    \nNotes for ChatGPT:\n\nPlease keep the output concise, practical, and immediately usable.  \nYour goal is to help me find ongoing conversations where my authentic contributions will be seen by the right people.`;
+        prompt1.textContent = base;
+      }
+
+      inputContext.addEventListener('input', updatePrompt1);
+      updatePrompt1();
+
+      // Live bindings for Input Box 2 -> Prompt 4 (platform name)
+      const inputPlatform = document.getElementById('inputPlatform');
+      const prompt4 = document.getElementById('prompt4');
+
+      function updatePrompt4(){
+        const val = inputPlatform.value.trim() || '[Platform Name]';
+        const base = `I want to follow 20 major accounts on ${val} who regularly post about the core topics identified in this universal keyword set, so I can engage with their content.\n\nPlease provide:\n\nA bullet list of 20 accounts\nEach item should include: Account Name + Profile Link + 1-sentence description of what they post and why they’re relevant for my visibility goals.`;
+        prompt4.textContent = base;
+      }
+
+      inputPlatform.addEventListener('input', updatePrompt4);
+      updatePrompt4();
+
+    });
+  </script>
+</body>
+</html>
