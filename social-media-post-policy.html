@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Media Strategy Prompt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient-start: #1f2937;
+      --bg-gradient-end: #111827;
+      --card-bg: rgba(31, 41, 55, 0.5);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --text-heading: #ffffff;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #34d399;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow-color: rgba(0, 0, 0, 0.25);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+    .prompt-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(12px);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+    .prompt-card h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .prompt-text {
+      background-color: var(--code-bg);
+      padding: 25px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 25px;
+      border: 1px solid var(--card-border);
+      line-height: 1.5;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    /* Scrollbar Styling */
+    .prompt-text::-webkit-scrollbar {
+      width: 8px;
+    }
+    .prompt-text::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    .prompt-text::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 10px;
+    }
+
+    .copy-button {
+      align-self: flex-end;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--bg-gradient-end);
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 14px 0 rgba(34, 211, 238, 0.3);
+    }
+    .copy-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px 0 rgba(34, 211, 238, 0.4);
+    }
+    .copy-button.copied {
+      background-color: var(--accent-success);
+      box-shadow: 0 4px 14px 0 rgba(52, 211, 153, 0.3);
+    }
+    .icon { width: 18px; height: 18px; }
+    .copied-icon { display: none; }
+    .copy-button.copied .copy-icon { display: none; }
+    .copy-button.copied .copied-icon { display: inline-block; }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      padding-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 20px 15px; }
+      h1 { font-size: 1.8rem; }
+      .prompt-text { font-size: 0.85rem; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Content Policy Blueprint</h1>
+      <p class="subtitle">Social Media Posting Guidelines & Strategy Framework</p>
+    </header>
+
+    <main>
+      <div class="prompt-card">
+        <h2>Content Policy Prompt</h2>
+        <pre id="policyPrompt" class="prompt-text">Here's my Social Media Content policy:
+
+Ideal Uses:
+
+1. Curiosity Post
+   *Opens the loop, attracts attention, primes interest*
+
+2. Value Post (No CTA)
+   *Delivers goodwill and authority without asking*
+
+3. Story Post
+   *Humanizes you and lowers resistance*
+
+4. Value Post (With CTA)
+   *Now the CTA feels earned, not intrusive*
+
+5. Question Post
+   *Invites participation and resets the algorithm*
+
+6. Hot Take Post
+   *Creates momentum and discussion*
+
+7. Win Post
+   *Closes the loop with social proof*
+
+| Stage            | What the Audience Feels                |
+| ---------------- | -------------------------------------- |
+| Curiosity        | “Interesting… tell me more”            |
+| Value (No CTA)   | “This is useful”                       |
+| Story            | “I relate to this person”              |
+| Value (With CTA) | “I trust this enough to act”           |
+| Question         | “I want to join the conversation”      |
+| Hot Take         | “I have an opinion on this”            |
+| Win              | “They clearly know what they’re doing” |
+
+---
+
+## Posting Frequency Example (Facebook Profile/Page)
+
+### 5 Posts / Week (Recommended)
+
+| Day        | Post Type                            |
+| ---------- | -------------------------------------|
+| Mon        | Curiosity                            |
+| Tue        | Value (No CTA)                       |
+| Wed        | Story                                |
+| Thu        | Value (With CTA) -→ “Comment ‘X’”    |
+| Fri        | Question or Hot Take                 |
+| (Next Mon) | Win                                  |
+
+---
+
+FOR NON-ADMIN PUBLIC GROUPS:
+
+What to Post (and What NOT to Post):
+
+✅ Allowed & Encouraged
+Value posts (tactical, specific, helpful)
+Question posts (genuine curiosity)
+Light story posts (learning-focused)
+Replies on others’ posts (very important)
+⚠️ Hot takes only if clearly value-driven and aligned with group norms
+
+❌ Avoid Completely
+Sales posts
+Win posts about yourself
+Lead magnets
+External links (unless explicitly allowed)
+“DM me” CTAs
+
+1, First Value Post:
+Goal: Test acceptance
+Post type: Value
+Structure:
+Start with group context (“Seeing many questions about X…”)
+Share 3–5 actionable tips
+End without CTA
+❌ No links
+❌ No selling
+❌ No self-promotion
+
+2, Second Value Post:
+Goal: Reinforce expertise
+Go deeper than first value post
+Solve a problem raised in comments
+Still no CTA
+
+3, Question Post:
+Goal: Invite conversation
+Post type: Question
+Examples:
+“What’s the biggest challenge you’re facing with X?”
+“Curious how others here handle Y.”
+
+This signals humility and community focus.
+
+Groups reward contribution. Profiles reward credibility. Don’t confuse the two.</pre>
+        
+        <button class="copy-button" onclick="copyPolicy('policyPrompt', this)">
+          <svg class="icon copy-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
+          <svg class="icon copied-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          <span class="button-text">Copy Full Policy</span>
+        </button>
+      </div>
+    </main>
+
+    <footer>
+      <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    async function copyPolicy(id, button) {
+      const text = document.getElementById(id).textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        const btnText = button.querySelector('.button-text');
+        const originalText = btnText.textContent;
+        
+        button.classList.add('copied');
+        btnText.textContent = 'Copied to Clipboard!';
+        
+        setTimeout(() => {
+          button.classList.remove('copied');
+          btnText.textContent = originalText;
+        }, 2500);
+      } catch (err) {
+        console.error('Failed to copy', err);
+        alert('Could not copy text. Please select and copy manually.');
+      }
+    }
+  </script>
+</body>
+</html>
